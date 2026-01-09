@@ -1,194 +1,115 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>GeoJSON → Custom Campus Map</title>
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d74ff">
+    <title>CET Campus Maps</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./public/icons/icon-192.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="./public/icons/icon-192.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="./src/styles.css">
+  </head>
+  <body>
+    <noscript>This map requires JavaScript to function.</noscript>
+    <div class="app-shell">
+      <header class="top-bar" aria-label="Campus search">
+        <button class="icon-button" type="button" aria-label="Open navigation menu">
+          <span class="icon-line"></span>
+          <span class="icon-line"></span>
+          <span class="icon-line"></span>
+        </button>
+        <div class="search-wrapper">
+          <input id="searchInput" type="search" placeholder="Search CET buildings" autocomplete="off" aria-label="Search campus locations">
+          <button id="searchButton" class="icon-button" type="button" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15.5 14h-.79l-.28-.27a6 6 0 1 0-.7.7l.27.28v.79L20 21.5 21.5 20zm-6 0a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+            </svg>
+          </button>
+        </div>
+        <button class="icon-button" type="button" aria-label="Voice search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12z" />
+          </svg>
+        </button>
+      </header>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+      <section class="chip-scroll" aria-label="Quick campus filters">
+        <button class="chip" type="button" data-alias="canteen">Food courts</button>
+        <button class="chip" type="button" data-alias="lab">Labs</button>
+        <button class="chip" type="button" data-alias="lh">Hostels</button>
+        <button class="chip" type="button" data-alias="ground">Ground</button>
+        <button class="chip" type="button" data-alias="exam hall">Exam halls</button>
+      </section>
 
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-    }
-    #map {
-      height: 100%;
-    }
-  </style>
-</head>
-<body>
+      <main class="map-stage">
+        <div id="map" role="application" aria-label="Interactive map of CET campus"></div>
+        <div id="cursorCoords" class="coords-badge" aria-hidden="true">--, --</div>
+      </main>
 
-<div id="map"></div>
+      <section class="info-sheet" aria-live="polite">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="status-row">
+          <span class="status-dot"></span>
+          <p id="locationStatus">Trying to lock GPS...</p>
+        </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <div class="route-form" aria-label="Route planner">
+          <label class="field">
+            <span>From</span>
+            <select id="startSelect"></select>
+          </label>
+          <label class="field">
+            <span>To</span>
+            <select id="endSelect"></select>
+          </label>
+          <button id="routeButton" type="button" class="primary-btn">Start walking</button>
+        </div>
 
-<script>
-/* =========================
-   MAP INIT
-========================= */
+        <p id="routeSummary" class="route-summary">Pick two points inside CET to preview the walking route.</p>
 
-const map = L.map("map").setView([8.5452, 76.9364], 17);
+        <div class="toggle-grid" aria-label="Layer visibility toggles">
+          <label class="toggle">
+            <input id="buildingsToggle" type="checkbox" checked>
+            <span>Buildings</span>
+          </label>
+          <label class="toggle">
+            <input id="landmarksToggle" type="checkbox" checked>
+            <span>Landmarks</span>
+          </label>
+          <label class="toggle">
+            <input id="hostelsToggle" type="checkbox" checked>
+            <span>Hostels</span>
+          </label>
+          <label class="toggle">
+            <input id="pathsToggle" type="checkbox" checked>
+            <span>Paths</span>
+          </label>
+        </div>
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 20
-}).addTo(map);
+        <div class="results-header">
+          <div>
+            <h2>Explore places</h2>
+            <p>Tap a result to fly across campus.</p>
+          </div>
+        </div>
+        <div id="results" class="results-list"></div>
+      </section>
+    </div>
 
-/* =========================
-   LOAD GEOJSON
-========================= */
+    <template id="resultTemplate">
+      <article class="result-card">
+        <div class="result-text">
+          <h3 data-name></h3>
+          <p class="result-meta" data-type></p>
+          <p class="result-desc" data-desc></p>
+        </div>
+        <button type="button" class="mini-btn" data-focus>View</button>
+      </article>
+    </template>
 
-fetch("data/cet_loc_v1.geojson")
-  .then(r => r.json())
-  .then(data => {
-    drawGeoJSON(data);
-    buildAndRoute(data);
-  });
-
-/* =========================
-   DRAW EVERYTHING
-========================= */
-
-function drawGeoJSON(data) {
-  L.geoJSON(data, {
-    style: f => {
-      if (f.geometry.type === "LineString") {
-        return { color: "#aaa", weight: 3 };
-      }
-      if (f.geometry.type.includes("Polygon")) {
-        return { color: "#444", fillOpacity: 0.2 };
-      }
-    }
-  }).addTo(map);
-}
-
-/* =========================
-   BUILD GRAPH + ROUTE
-========================= */
-
-function buildAndRoute(geojson) {
-  const walkables = geojson.features.filter(f =>
-    f.geometry.type === "LineString" &&
-    f.properties &&
-    ["footway", "path", "pedestrian"].includes(f.properties.highway)
-  );
-
-  const nodes = new Map();
-  const graph = {};
-
-  function id(lat, lon) {
-    return lat + "," + lon;
-  }
-
-  function addEdge(a, b, d) {
-    graph[a] ??= [];
-    graph[b] ??= [];
-    graph[a].push([b, d]);
-    graph[b].push([a, d]);
-  }
-
-  walkables.forEach(f => {
-    const coords = f.geometry.coordinates;
-
-    for (let i = 0; i < coords.length - 1; i++) {
-      const [lon1, lat1] = coords[i];
-      const [lon2, lat2] = coords[i + 1];
-
-      const A = id(lat1, lon1);
-      const B = id(lat2, lon2);
-
-      nodes.set(A, [lat1, lon1]);
-      nodes.set(B, [lat2, lon2]);
-
-      const d = haversine(lat1, lon1, lat2, lon2);
-      addEdge(A, B, d);
-    }
-  });
-
-  const keys = [...nodes.keys()];
-  if (keys.length < 2) return;
-
-  const start = keys[0];
-  const end = keys[keys.length - 1];
-
-  const path = dijkstra(graph, start, end);
-  drawRoute(path, nodes);
-}
-
-/* =========================
-   DIJKSTRA
-========================= */
-
-function dijkstra(graph, start, end) {
-  const dist = {};
-  const prev = {};
-  const q = new Set(Object.keys(graph));
-
-  q.forEach(n => dist[n] = Infinity);
-  dist[start] = 0;
-
-  while (q.size) {
-    let u = null;
-    q.forEach(n => {
-      if (u === null || dist[n] < dist[u]) u = n;
-    });
-
-    q.delete(u);
-    if (u === end) break;
-
-    (graph[u] || []).forEach(([v, w]) => {
-      const alt = dist[u] + w;
-      if (alt < dist[v]) {
-        dist[v] = alt;
-        prev[v] = u;
-      }
-    });
-  }
-
-  const path = [];
-  let u = end;
-  while (u) {
-    path.unshift(u);
-    u = prev[u];
-  }
-  return path;
-}
-
-/* =========================
-   DRAW ROUTE
-========================= */
-
-function drawRoute(path, nodes) {
-  const latlngs = path.map(k => nodes.get(k));
-  L.polyline(latlngs, {
-    color: "red",
-    weight: 5
-  }).addTo(map);
-
-  map.fitBounds(latlngs);
-}
-
-/* =========================
-   DISTANCE
-========================= */
-
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371e3;
-  const toRad = x => x * Math.PI / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) *
-    Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) ** 2;
-
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-</script>
-
-</body>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="./src/app.js" type="module"></script>
+  </body>
 </html>

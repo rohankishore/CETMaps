@@ -317,6 +317,19 @@ async function loadGeoJsonLayers() {
           fillOpacity: 0.95,
           weight: 2
         }),
+      style: (feature) => {
+        const geomType = feature.geometry?.type;
+        if (geomType === "Polygon" || geomType === "MultiPolygon") {
+          return {
+            color: dataset.color,
+            weight: 2,
+            opacity: 0.9,
+            fillColor: dataset.color,
+            fillOpacity: 0
+          };
+        }
+        return undefined;
+      },
       onEachFeature: (feature, layerRef) => {
         const props = feature.properties;
         layerRef.bindPopup(`<strong>${props.name}</strong><br>${props.description || ""}`);
