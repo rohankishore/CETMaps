@@ -43,6 +43,7 @@ const locationStatus = document.getElementById("locationStatus");
 const startSelect = document.getElementById("startSelect");
 const endSelect = document.getElementById("endSelect");
 const routeButton = document.getElementById("routeButton");
+const cursorCoords = document.getElementById("cursorCoords");
 const toggleRefs = {
   buildings: document.getElementById("buildingsToggle"),
   landmarks: document.getElementById("landmarksToggle"),
@@ -93,6 +94,7 @@ async function initialize() {
   wireSearch();
   wireQuickFilters();
   wireToggles();
+  wireCursorTracker();
   watchLocation();
   try {
     await loadCampusBoundary();
@@ -103,6 +105,19 @@ async function initialize() {
     console.error("Failed to load campus data", error);
     routeSummary.textContent = "Unable to load campus data offline cache yet.";
   }
+}
+
+function wireCursorTracker() {
+  if (!cursorCoords) return;
+  map.on("mousemove", (event) => {
+    const lat = event.latlng.lat.toFixed(6);
+    const lng = event.latlng.lng.toFixed(6);
+    cursorCoords.textContent = `${lat}, ${lng}`;
+    cursorCoords.style.opacity = "1";
+  });
+  map.on("mouseout", () => {
+    cursorCoords.style.opacity = "0";
+  });
 }
 
 async function loadCampusBoundary() {
@@ -174,8 +189,8 @@ function createMaskLayer() {
   ];
   maskLayer = L.polygon([outerRing, ...boundaryRings], {
     stroke: false,
-    fillColor: "#e2efe7",
-    fillOpacity: 0.75,
+    fillColor: "#f5faf3",
+    fillOpacity: 1,
     interactive: false,
     fillRule: "evenodd"
   }).addTo(map);

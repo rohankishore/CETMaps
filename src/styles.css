@@ -29,6 +29,23 @@ body {
   z-index: 0;
 }
 
+.cursor-coords {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(19, 38, 33, 0.65);
+  color: #f5faf3;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
 .top-bar {
   position: fixed;
   top: 0.75rem;

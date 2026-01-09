@@ -6833,29 +6833,6 @@
         },
         {
             "type": "Feature",
-            "id": "node/4157947111",
-            "properties": {
-                "timestamp": "2024-02-20T10:18:21Z",
-                "version": "2",
-                "changeset": "147685304",
-                "user": "Ashwin Pavithran",
-                "uid": "21051278",
-                "amenity": "cafe",
-                "cuisine": "coffee_shop",
-                "name": "BBG",
-                "outdoor_seating": "no",
-                "id": "node/4157947111"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    76.9052216,
-                    8.5467584
-                ]
-            }
-        },
-        {
-            "type": "Feature",
             "id": "node/4157947112",
             "properties": {
                 "timestamp": "2016-04-30T17:39:34Z",
