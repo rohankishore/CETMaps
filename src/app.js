@@ -1,6 +1,7 @@
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 17;
 const WALKING_SPEED_MPS = 1.4;
+const BOUNDARY_URL = "./data/cet_loc_v1.geojson";
 
 const DATASETS = [
   {
@@ -55,6 +56,8 @@ let accuracyCircle;
 let focusMarker;
 let routeLine;
 let graphNodes = null;
+let boundaryLayer;
+let campusBounds;
 
 const layerStore = new Map();
 const featureIndex = [];
@@ -66,7 +69,8 @@ const map = L.map("map", {
   zoomControl: false,
   preferCanvas: true,
   minZoom: 16,
-  maxZoom: 20
+  maxZoom: 20,
+  maxBoundsViscosity: 1.0
 });
 
 L.control.zoom({ position: "bottomright" }).addTo(map);
@@ -87,12 +91,36 @@ async function initialize() {
   wireToggles();
   watchLocation();
   try {
+    await loadCampusBoundary();
     await loadGeoJsonLayers();
     refreshSelectOptions();
     renderResults(featureIndex.slice(0, 5));
   } catch (error) {
     console.error("Failed to load campus data", error);
     routeSummary.textContent = "Unable to load campus data offline cache yet.";
+  }
+}
+
+async function loadCampusBoundary() {
+  const response = await fetch(BOUNDARY_URL);
+  if (!response.ok) {
+    throw new Error("Unable to fetch campus boundary");
+  }
+  const geojson = await response.json();
+  if (boundaryLayer) {
+    boundaryLayer.remove();
+  }
+  boundaryLayer = L.geoJSON(geojson, {
+    style: {
+      color: "#14604d",
+      weight: 1.5,
+      fillOpacity: 0.03
+    }
+  }).addTo(map);
+  campusBounds = boundaryLayer.getBounds();
+  if (campusBounds.isValid()) {
+    map.setMaxBounds(campusBounds.pad(0.0025));
+    map.fitBounds(campusBounds, { padding: [40, 40] });
   }
 }
 

@@ -11,6 +11,7 @@ const APP_ASSETS = [
   "/data/landmarks.geojson",
   "/data/hostels.geojson",
   "/data/paths.geojson",
+  "/data/cet_loc_v1.geojson",
   "/public/icons/icon-192.svg",
   "/public/icons/icon-512.svg",
   "/public/logo.png",

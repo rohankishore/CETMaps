@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CET Maps Prototype</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      :root {
+        --panel: rgba(255, 255, 255, 0.95);
+        --shadow: 0 18px 40px rgba(8, 24, 20, 0.25);
+        --accent: #0b8a5d;
+        --text: #04130d;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #edf4ee;
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      #map {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      header.top-bar {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        right: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 2;
+      }
+
+      .icon-button {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: none;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.22rem;
+        cursor: pointer;
+      }
+
+      .icon-line {
+        width: 18px;
+        height: 2px;
+        background: var(--text);
+        border-radius: 2px;
+      }
+
+      .search-pill {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.4rem 0.4rem 0.9rem;
+        border-radius: 999px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .search-pill input {
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        flex: 1;
+      }
+
+      .search-pill button {
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.1rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+      }
+
+      .avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        object-fit: cover;
+        box-shadow: var(--shadow);
+      }
+
+      .chip-strip {
+        position: fixed;
+        top: 4.8rem;
+        left: 0;
+        right: 0;
+        padding: 0 0.75rem;
+        display: flex;
+        gap: 0.45rem;
+        overflow-x: auto;
+        z-index: 2;
+      }
+
+      .chip-strip::-webkit-scrollbar {
+        display: none;
+      }
+
+      .quick-chip {
+        border: none;
+        border-radius: 999px;
+        padding: 0.45rem 1rem;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .bottom-sheet {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0.5rem 1rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        z-index: 2;
+      }
+
+      .sheet-card {
+        background: var(--panel);
+        border-radius: 24px;
+        padding: 1rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        max-height: 32vh;
+        overflow-y: auto;
+      }
+
+      .sheet-card h3 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      #results {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      #results li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .result-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+
+      .result-meta span {
+        font-size: 0.8rem;
+        color: #5a6a62;
+      }
+
+      .focus-btn {
+        border: none;
+        border-radius: 14px;
+        padding: 0.35rem 0.9rem;
+        font-weight: 600;
+        background: #e5efe8;
+        cursor: pointer;
+      }
+
+      .leaflet-control-attribution {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.7rem;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      @media (min-width: 900px) {
+        .bottom-sheet {
+          align-items: center;
+        }
+
+        .sheet-card {
+          width: min(480px, 90%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" role="region" aria-label="CET campus map preview"></div>
+
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Open menu">
+        <span class="icon-line"></span>
+        <span class="icon-line"></span>
+        <span class="icon-line"></span>
+      </button>
+      <div class="search-pill">
+        <label class="visually-hidden" for="searchInput">Search campus</label>
+        <input id="searchInput" type="search" placeholder="Search CET campus" autocomplete="off" />
+        <button id="searchButton" type="button">Search</button>
+      </div>
+      <img src="./public/logo.png" alt="CETMaps badge" class="avatar" />
+    </header>
+
+    <div class="chip-strip" aria-label="Popular spots">
+      <button class="quick-chip" data-alias="EEE">EEE block</button>
+      <button class="quick-chip" data-alias="LH">Ladies hostel</button>
+      <button class="quick-chip" data-alias="Ground">Central ground</button>
+      <button class="quick-chip" data-alias="Library">Library</button>
+      <button class="quick-chip" data-alias="Auditorium">Auditorium</button>
+    </div>
+
+    <section class="bottom-sheet">
+      <article class="sheet-card">
+        <h3>Places</h3>
+        <ul id="results"></ul>
+      </article>
+    </section>
+
+    <template id="resultTemplate">
+      <li>
+        <div class="result-meta">
+          <strong data-name></strong>
+          <span data-desc></span>
+        </div>
+        <button class="focus-btn" type="button" data-focus>View</button>
+      </li>
+    </template>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script>
+      const MAP_CENTER = [8.5452, 76.9364];
+      const DATA_URL = "data/cet_loc_v1.geojson";
+
+      const map = L.map("map", {
+        center: MAP_CENTER,
+        zoom: 17,
+        zoomControl: false,
+        preferCanvas: true,
+        minZoom: 15,
+        maxZoom: 20
+      });
+
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      const searchInput = document.getElementById("searchInput");
+      const searchButton = document.getElementById("searchButton");
+      const quickChips = document.querySelectorAll(".quick-chip");
+      const resultsNode = document.getElementById("results");
+      const resultTemplate = document.getElementById("resultTemplate");
+      const featureStore = [];
+      let focusMarker;
+
+      fetch(DATA_URL)
+        .then((res) => res.json())
+        .then((geojson) => {
+          const baseLayer = L.geoJSON(geojson, {
+            style: (feature) => styleFeature(feature),
+            onEachFeature: (feature, layer) => registerFeature(feature, layer)
+          }).addTo(map);
+
+          const bounds = baseLayer.getBounds();
+          if (bounds.isValid()) {
+            map.fitBounds(bounds.pad(0.02));
+            map.setMaxBounds(bounds.pad(0.08));
+          }
+
+          renderResults(featureStore.slice(0, 6));
+        })
+        .catch((error) => console.error("Failed to load CET GeoJSON", error));
+
+      function styleFeature(feature) {
+        const type = feature.geometry?.type;
+        if (type === "LineString" || type === "MultiLineString") {
+          return {
+            color: "#0b8a5d",
+            weight: 3,
+            opacity: 0.8
+          };
+        }
+        if (type === "Polygon" || type === "MultiPolygon") {
+          return {
+            color: "#0b3d2e",
+            weight: 1.5,
+            fillOpacity: 0.35,
+            fillColor: "#62d2a2"
+          };
+        }
+        return {
+          radius: 8,
+          fillColor: "#f4b400",
+          color: "#0b3d2e",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9
+        };
+      }
+
+      function registerFeature(feature, layer) {
+        const props = feature.properties || {};
+        const name = props.name || props.ref || props.id || "Unnamed spot";
+        const desc = props.description || props.amenity || props.highway || "";
+        const center = deriveCenter(layer);
+        if (!center) return;
+
+        featureStore.push({ id: name + Math.random(), name, description: desc, layer, center });
+        layer.bindPopup(`<strong>${name}</strong><br>${desc}`);
+      }
+
+      function deriveCenter(layer) {
+        if (layer.getLatLng) return layer.getLatLng();
+        const bounds = layer.getBounds?.();
+        if (bounds && bounds.isValid()) {
+          return bounds.getCenter();
+        }
+        return null;
+      }
+
+      function renderResults(list) {
+        resultsNode.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        list.forEach((entry) => {
+          const clone = resultTemplate.content.cloneNode(true);
+          clone.querySelector("[data-name]").textContent = entry.name;
+          clone.querySelector("[data-desc]").textContent = entry.description;
+          clone.querySelector("[data-focus]").addEventListener("click", () => focusOn(entry));
+          fragment.appendChild(clone);
+        });
+        resultsNode.appendChild(fragment);
+      }
+
+      function performSearch() {
+        const query = searchInput.value.trim().toLowerCase();
+        const matches = query
+          ? featureStore.filter((entry) => entry.name.toLowerCase().includes(query) || entry.description.toLowerCase().includes(query))
+          : featureStore.slice(0, 6);
+        renderResults(matches.slice(0, 8));
+      }
+
+      function focusOn(entry) {
+        if (!entry) return;
+        if (focusMarker) {
+          focusMarker.remove();
+        }
+        focusMarker = L.circleMarker(entry.center, {
+          radius: 14,
+          color: "#f2542d",
+          weight: 4,
+          fillOpacity: 0.35,
+          fillColor: "#f2542d"
+        }).addTo(map);
+        map.flyTo(entry.center, 18, { duration: 0.6 });
+        entry.layer?.openPopup?.();
+      }
+
+      searchButton.addEventListener("click", performSearch);
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          performSearch();
+        }
+      });
+
+      quickChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          searchInput.value = chip.dataset.alias || chip.textContent;
+          performSearch();
+        });
+      });
+    </script>
+  </body>
+</html>
+
+
+

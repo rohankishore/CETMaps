@@ -3,7 +3,7 @@
 Progressive Web App for navigating the College of Engineering Trivandrum campus fully offline.
 
 ## Highlights
-- Leaflet.js + OpenStreetMap base map tailored for outdoor/mobile use
+- Leaflet.js + OpenStreetMap base map tailored for outdoor/mobile use, locked to the CET boundary perimeter
 - Local GeoJSON layers for buildings, hostels, landmarks, and pedestrian paths
 - Alias-based search ("EEE block", "LH", "Ground") with instant map focus
 - On-device routing entirely within campus paths — no external APIs
