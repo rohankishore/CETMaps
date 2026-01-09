@@ -1,5 +1,5 @@
 const MAP_CENTER = [8.54589, 76.90585];
-const DEFAULT_ZOOM = 18;
+const DEFAULT_ZOOM = 24;
 const WALKING_SPEED_MPS = 1.4;
 const BOUNDARY_URL = "./data/cet_loc_v1.geojson";
 
