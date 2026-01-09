@@ -18,6 +18,20 @@
     {
       "type": "Feature",
       "properties": {
+        "id": "dhwani-stage",
+        "name": "Dhwani Stage",
+        "category": "landmark",
+        "aliases": ["dhwani", "open air auditorium", "open auditorium", "amphitheatre"],
+        "description": "Student-run amphitheatre for cultural nights."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.904147, 8.545258]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "id": "central-ground",
         "name": "Central Ground",
         "category": "landmark",
@@ -26,7 +40,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [76.90691, 8.54651]
+        "coordinates": [76.904182, 8.544208]
       }
     },
     {
@@ -40,7 +54,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [76.9056, 8.54597]
+        "coordinates": [76.904452, 8.545318]
       }
     }
   ]
