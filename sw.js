@@ -13,6 +13,7 @@ const APP_ASSETS = [
   "/data/paths.geojson",
   "/public/icons/icon-192.svg",
   "/public/icons/icon-512.svg",
+  "/public/logo.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ];

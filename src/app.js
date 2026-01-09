@@ -34,6 +34,7 @@ const DATASETS = [
 
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
+const quickChips = document.querySelectorAll("[data-alias]");
 const resultsList = document.getElementById("results");
 const resultTemplate = document.getElementById("resultTemplate");
 const routeSummary = document.getElementById("routeSummary");
@@ -41,7 +42,6 @@ const locationStatus = document.getElementById("locationStatus");
 const startSelect = document.getElementById("startSelect");
 const endSelect = document.getElementById("endSelect");
 const routeButton = document.getElementById("routeButton");
-const installButton = document.getElementById("installButton");
 const toggleRefs = {
   buildings: document.getElementById("buildingsToggle"),
   landmarks: document.getElementById("landmarksToggle"),
@@ -49,7 +49,6 @@ const toggleRefs = {
   paths: document.getElementById("pathsToggle")
 };
 
-let beforeInstallPrompt;
 let currentLocation = null;
 let locationMarker;
 let accuracyCircle;
@@ -83,8 +82,8 @@ initialize();
 
 async function initialize() {
   registerServiceWorker();
-  handleInstallPrompt();
   wireSearch();
+  wireQuickFilters();
   wireToggles();
   watchLocation();
   try {
@@ -95,6 +94,15 @@ async function initialize() {
     console.error("Failed to load campus data", error);
     routeSummary.textContent = "Unable to load campus data offline cache yet.";
   }
+}
+
+function wireQuickFilters() {
+  quickChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      searchInput.value = chip.dataset.alias || "";
+      performSearch();
+    });
+  });
 }
 
 function wireSearch() {
@@ -486,20 +494,4 @@ function registerServiceWorker() {
       navigator.serviceWorker.register("./sw.js").catch((err) => console.error("SW registration failed", err));
     });
   }
-}
-
-function handleInstallPrompt() {
-  installButton.disabled = true;
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    beforeInstallPrompt = event;
-    installButton.disabled = false;
-  });
-  installButton.addEventListener("click", async () => {
-    if (!beforeInstallPrompt) return;
-    installButton.disabled = true;
-    beforeInstallPrompt.prompt();
-    await beforeInstallPrompt.userChoice;
-    beforeInstallPrompt = null;
-  });
 }

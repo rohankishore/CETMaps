@@ -11,7 +11,7 @@
 		<link
 			rel="stylesheet"
 			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-			integrity="sha256-sA+e2tuZVKbFI5u7FN5zYEcMcbBawBf3vGh6V6pQ5wE="
+			integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
 			crossorigin=""
 		/>
 		<link rel="stylesheet" href="./src/styles.css" />
@@ -19,23 +19,33 @@
 	<body>
 		<div id="map" role="region" aria-label="Interactive campus map"></div>
 
-		<div class="brand-badge">
-			<p class="eyebrow">College of Engineering Trivandrum</p>
-			<h1>CETMaps</h1>
+		<header class="top-bar">
+			<button class="icon-button" type="button" aria-label="Open menu">
+				<span class="icon-line"></span>
+				<span class="icon-line"></span>
+				<span class="icon-line"></span>
+			</button>
+			<div class="search-pill">
+				<label class="visually-hidden" for="searchInput">Search CET campus</label>
+				<input id="searchInput" type="search" placeholder="Search here" autocomplete="off" />
+				<button id="searchButton" type="button" aria-label="Search">Go</button>
+			</div>
+			<img src="./public/logo.png" alt="CETMaps logo" class="logo-chip" />
+		</header>
+
+		<div class="chip-strip" aria-label="Popular shortcuts">
+			<button class="quick-chip" data-alias="EEE block">EEE block</button>
+			<button class="quick-chip" data-alias="LH">LH</button>
+			<button class="quick-chip" data-alias="Ground">Ground</button>
+			<button class="quick-chip" data-alias="Library">Library</button>
+			<button class="quick-chip" data-alias="Civil block">Civil</button>
 		</div>
 
-		<button id="installButton" class="install-fab" type="button" aria-label="Install CETMaps">Install</button>
-
 		<section class="bottom-shelf" aria-label="Navigation toolbox">
-			<article class="tool-card search-card">
+			<article class="tool-card results-card">
 				<div class="tool-header">
-					<p class="tool-title">Search</p>
-					<span class="tool-subtitle">Aliases like “EEE block” or “Ground” work too.</span>
-				</div>
-				<label class="visually-hidden" for="searchInput">Find a building, hostel, or landmark</label>
-				<div class="search-row">
-					<input id="searchInput" type="search" placeholder="Search CET campus" autocomplete="off" />
-					<button id="searchButton" type="button">Go</button>
+					<p class="tool-title">Places</p>
+					<span class="tool-subtitle">Tap a result to focus</span>
 				</div>
 				<ul id="results" aria-label="Search results"></ul>
 			</article>
@@ -43,7 +53,7 @@
 			<article class="tool-card route-card">
 				<div class="tool-header">
 					<p class="tool-title">Route</p>
-					<span class="tool-subtitle">Campus-only walking paths</span>
+					<span class="tool-subtitle">Walking paths only</span>
 				</div>
 				<label class="visually-hidden" for="startSelect">Select a starting point</label>
 				<select id="startSelect"></select>
@@ -55,7 +65,7 @@
 			<article class="tool-card layers-card">
 				<div class="tool-header">
 					<p class="tool-title">Layers</p>
-					<span class="tool-subtitle">Tap to toggle visibility</span>
+					<span class="tool-subtitle">Toggle visibility</span>
 				</div>
 				<div class="chip-row">
 					<label class="chip"><input id="buildingsToggle" type="checkbox" checked /> Buildings</label>
@@ -87,7 +97,7 @@
 
 		<script
 			src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-			integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7uVFM0LmI6H7Yx04EcZ0XY="
+			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 			crossorigin=""
 		></script>
 		<script type="module" src="./src/app.js"></script>

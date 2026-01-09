@@ -29,49 +29,74 @@ body {
   z-index: 0;
 }
 
-.brand-badge {
+.top-bar {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.6rem 1rem;
-  border-radius: 16px;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  z-index: 2;
+}
+
+.icon-button {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: none;
   background: var(--panel);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
-  z-index: 2;
-}
-
-.brand-badge h1 {
-  margin: 0.15rem 0 0;
-  font-size: 1.4rem;
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.6rem;
-  margin: 0;
-}
-
-.install-fab {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  border: none;
-  border-radius: 999px;
-  padding: 0.65rem 1.2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background: var(--accent);
-  color: white;
-  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.22rem;
   cursor: pointer;
-  z-index: 2;
 }
 
-.install-fab:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.icon-line {
+  width: 18px;
+  height: 2px;
+  background: var(--fg);
+  border-radius: 2px;
+}
+
+.search-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--panel);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+}
+
+.logo-chip {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  object-fit: cover;
+}
+
+.chip-strip {
+  position: fixed;
+  top: 4.6rem;
+  left: 0;
+  right: 0;
+  padding: 0 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  z-index: 2;
+  scrollbar-width: none;
+}
+
+.chip-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .bottom-shelf {
@@ -79,7 +104,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 1rem 1rem 1.3rem;
+  padding: 0.25rem 1rem 1.1rem;
   display: flex;
   gap: 0.75rem;
   overflow-x: auto;
@@ -93,7 +118,7 @@ body {
 
 .tool-card {
   flex: 0 0 clamp(260px, 55vw, 360px);
-  background: var(--panel);
+  background: rgba(255, 255, 255, 0.96);
   border-radius: 24px;
   padding: 1rem;
   box-shadow: var(--shadow);
@@ -139,6 +164,14 @@ select {
   width: 100%;
 }
 
+.search-pill input {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+}
+
 button {
   border: none;
   border-radius: 16px;
@@ -153,6 +186,31 @@ button {
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.search-pill button {
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+}
+
+.icon-button {
+  background: var(--panel);
+  color: var(--fg);
+  padding: 0;
+  border-radius: 999px;
+}
+
+.quick-chip {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  color: #1b3a30;
+  cursor: pointer;
 }
 
 .chip-row {
