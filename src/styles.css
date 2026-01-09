@@ -1,11 +1,11 @@
 :root {
   color-scheme: light dark;
   --bg: #f5faf3;
-  --fg: #072016;
+  --fg: #04130d;
   --accent: #0b8a5d;
   --accent-strong: #05603c;
   --panel: rgba(255, 255, 255, 0.92);
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
 }
 
@@ -18,44 +18,132 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--fg);
+  overflow: hidden;
 }
 
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 1rem;
-  gap: 1rem;
+#map {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.brand-badge {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 16px;
   background: var(--panel);
-  padding: 0.75rem 1rem;
-  border-radius: 20px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  z-index: 2;
 }
 
-h1 {
-  margin: 0.1rem 0 0;
-  font-size: 1.8rem;
+.brand-badge h1 {
+  margin: 0.15rem 0 0;
+  font-size: 1.4rem;
 }
 
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   margin: 0;
+}
+
+.install-fab {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.install-fab:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bottom-shelf {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem 1rem 1.3rem;
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  z-index: 2;
+  scrollbar-width: none;
+}
+
+.bottom-shelf::-webkit-scrollbar {
+  display: none;
+}
+
+.tool-card {
+  flex: 0 0 clamp(260px, 55vw, 360px);
+  background: var(--panel);
+  border-radius: 24px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tool-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tool-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tool-subtitle {
+  font-size: 0.8rem;
+  color: #51675d;
+}
+
+.search-row {
+  display: flex;
+  gap: 0.45rem;
+}
+
+input[type="search"],
+select {
+  flex: 1;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  background: white;
+  color: var(--fg);
+  width: 100%;
 }
 
 button {
   border: none;
-  border-radius: 999px;
-  padding: 0.65rem 1.2rem;
-  font-size: 0.95rem;
+  border-radius: 16px;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
   font-weight: 600;
   background: var(--accent);
   color: white;
@@ -67,92 +155,25 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.controls {
-  background: var(--panel);
-  border-radius: 24px;
-  padding: 1rem;
-  box-shadow: var(--shadow);
+.chip-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.input-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.search-row {
-  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.search-row input {
-  flex: 1;
+.chip {
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.65rem 1rem;
-  font-size: 1rem;
-}
-
-.alias-hints {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 0.35rem 0.8rem;
   font-size: 0.85rem;
-  color: #335244;
-}
-
-.filter-row,
-.route-row {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.filter-row {
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  font-size: 0.85rem;
-}
-
-.filter-row label {
   display: flex;
-  gap: 0.3rem;
   align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
 }
 
-.route-row {
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  align-items: flex-end;
-}
-
-.route-row select {
-  width: 100%;
-  border-radius: 14px;
-  padding: 0.4rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  min-height: 2.5rem;
-}
-
-main {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-#map {
-  width: 100%;
-  height: min(60vh, 520px);
-  border-radius: 30px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.info-panel {
-  background: var(--panel);
-  border-radius: 24px;
-  box-shadow: var(--shadow);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.chip input {
+  accent-color: var(--accent);
 }
 
 #results {
@@ -161,14 +182,18 @@ main {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.2rem;
+  max-height: 180px;
+  overflow-y: auto;
 }
 
 #results li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .result-text {
@@ -178,25 +203,50 @@ main {
 }
 
 .result-text span {
-  font-size: 0.8rem;
-  color: #496356;
+  font-size: 0.75rem;
+  color: #486053;
 }
 
-.leaflet-control-attribution a,
+.status-card p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.leaflet-control-container .leaflet-control-scale-line,
+.leaflet-control-container .leaflet-control-zoom {
+  backdrop-filter: blur(14px);
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
 .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  padding: 0.2rem 0.8rem;
+}
+
+.leaflet-control-attribution a {
   color: #123828;
 }
 
 @media (min-width: 900px) {
-  .app-shell {
-    padding: 1.5rem 2rem 2rem;
+  .bottom-shelf {
+    justify-content: center;
   }
 
-  main {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  #map {
-    height: calc(100vh - 280px);
+  .tool-card {
+    flex: 0 0 320px;
   }
 }
