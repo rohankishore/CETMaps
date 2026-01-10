@@ -1,7 +1,7 @@
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
 const WALKING_SPEED_MPS = 1.4;
-const CET_DATA_URL = "cet.geojson";
+const CET_DATA_URL = "./cet.geojson";
 
 const COLORS = {
   building: "#0b8a5d",
