@@ -2,16 +2,20 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Campus Map</title>
+  <title>Campus Map (Clipped)</title>
 
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.css"
+  />
 
   <style>
-    body { margin: 0; background: #f5f5f5; }
-    #map { height: 100vh; }
+    body { margin: 0; }
+    #map { height: 100vh; background: #f5f5f5; }
   </style>
 </head>
 <body>
@@ -19,17 +23,28 @@
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
 <script>
 
-  // 1️⃣ Create map WITHOUT basemap
-  const map = L.map("map", {
-    zoomControl: true,
-    attributionControl: false
-  });
+const map = L.map("map", {
+  attributionControl: false,
+  zoomControl: true,
+  rotate: true,
+  touchRotate: true,
+  rotateControl: {
+    closeOnZeroBearing: false,
+    position: 'bottomright'
+  }
+});
 
-  // 2️⃣ YOUR GEOJSON (paste here)
-  const campusGeoJSON = {
-    "type": "FeatureCollection",
+/* � LABEL-FREE BASEMAP */
+const base = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+);
+
+/* 🔴 YOUR GEOJSON */
+const campusGeoJSON = {
+"type": "FeatureCollection",
   "features": [
     {
       "type": "Feature",
@@ -2215,39 +2230,29 @@
       "id": 82
     }
   ]
-  };
+};
 
-  // 3️⃣ Add your campus data
-  const layer = L.geoJSON(campusGeoJSON, {
-    style: f => {
-      if (f.geometry.type === "LineString")
-        return { color: "#2196f3", weight: 4 };
-      if (f.geometry.type === "Polygon")
-        return { color: "#222", fillOpacity: 0.6 };
-    },
-    pointToLayer: (f, latlng) =>
-      L.circleMarker(latlng, {
-        radius: 6,
-        fillColor: "#e91e63",
-        color: "#fff",
-        weight: 1,
-        fillOpacity: 1
-      }),
-    onEachFeature: (f, layer) => {
-      if (f.properties?.name)
-        layer.bindPopup(`<b>${f.properties.name}</b>`);
-    }
-  }).addTo(map);
+/* 1️⃣ ADD BASEMAP FIRST */
+base.addTo(map);
 
-  // 4️⃣ FORCE START ZOOM ON CAMPUS
-  const bounds = layer.getBounds();
-  map.fitBounds(bounds, {
-    padding: [60, 60],
-    maxZoom: 19
-  });
+/* 2️⃣ ADD GEOJSON */
+const campusLayer = L.geoJSON(campusGeoJSON, {
+  style: f => {
+    if (f.geometry.type === "Polygon")
+      return { color: "#222", fillOpacity: 0.6 };
+    if (f.geometry.type === "LineString")
+      return { color: "#2196f3", weight: 4 };
+  }
+}).addTo(map);
 
-  // 5️⃣ LOCK MAP TO CAMPUS (optional but recommended)
-  map.setMaxBounds(bounds.pad(0.2));
+/* 3️⃣ FIT MAP TO ALL CAMPUS DATA */
+map.fitBounds(campusLayer.getBounds(), {
+  padding: [20, 20],
+  maxZoom: 19
+});
+
+/* 4️⃣ LOCK VIEW */
+map.setMaxBounds(campusLayer.getBounds().pad(0.2));
 
 </script>
 

@@ -1,37 +1,15 @@
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
 const WALKING_SPEED_MPS = 1.4;
-const BOUNDARY_URL = "./data/cet_loc_v1.geojson";
+const CET_DATA_URL = "cet.geojson";
 
-const DATASETS = [
-  {
-    id: "buildings",
-    label: "Buildings",
-    url: "./data/buildings.geojson",
-    color: "#0b8a5d",
-    pointRadius: 9
-  },
-  {
-    id: "landmarks",
-    label: "Landmarks",
-    url: "./data/landmarks.geojson",
-    color: "#f18f01",
-    pointRadius: 8
-  },
-  {
-    id: "hostels",
-    label: "Hostels",
-    url: "./data/hostels.geojson",
-    color: "#1768ac",
-    pointRadius: 9
-  },
-  {
-    id: "paths",
-    label: "Paths",
-    url: "./data/paths.geojson",
-    color: "#05603c"
-  }
-];
+const COLORS = {
+  building: "#0b8a5d",
+  landmark: "#f18f01",
+  hostel: "#1768ac",
+  path: "#05603c",
+  default: "#666666"
+};
 
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
@@ -75,15 +53,21 @@ const map = L.map("map", {
   preferCanvas: true,
   minZoom: 17,
   maxZoom: 20,
-  maxBoundsViscosity: 1.0
+  maxBoundsViscosity: 1.0,
+  rotate: true,
+  touchRotate: true,
+  rotateControl: {
+    closeOnZeroBearing: false,
+    position: 'bottomright'
+  }
 });
 
 L.control.zoom({ position: "bottomright" }).addTo(map);
 L.control.scale({ position: "bottomleft" }).addTo(map);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png", {
   maxZoom: 20,
-  attribution: "&copy; OpenStreetMap contributors",
+  attribution: "&copy; OpenStreetMap contributors, &copy; CARTO",
   tileSize: 256
 }).addTo(map);
 
@@ -97,7 +81,6 @@ async function initialize() {
   wireCursorTracker();
   watchLocation();
   try {
-    await loadCampusBoundary();
     await loadGeoJsonLayers();
     refreshSelectOptions();
     renderResults(featureIndex.slice(0, 5));
@@ -118,82 +101,6 @@ function wireCursorTracker() {
   map.on("mouseout", () => {
     cursorCoords.style.opacity = "0";
   });
-}
-
-async function loadCampusBoundary() {
-  const response = await fetch(BOUNDARY_URL);
-  if (!response.ok) {
-    throw new Error("Unable to fetch campus boundary");
-  }
-  const geojson = await response.json();
-  const polygonFeatures = {
-    type: "FeatureCollection",
-    features: geojson.features.filter((feature) => {
-      const geomType = feature.geometry?.type;
-      return geomType === "Polygon" || geomType === "MultiPolygon";
-    })
-  };
-  if (boundaryLayer) {
-    boundaryLayer.remove();
-  }
-  boundaryLayer = L.geoJSON(polygonFeatures, {
-    style: {
-      color: "transparent",
-      weight: 0,
-      opacity: 0,
-      fillOpacity: 0
-    }
-  }).addTo(map);
-  boundaryRings = collectBoundaryRings(polygonFeatures);
-  boundaryPolygons = boundaryRings.map((ring) => ring.map((pair) => [...pair]));
-  createMaskLayer();
-  campusBounds = boundaryLayer.getBounds();
-  if (campusBounds.isValid()) {
-    map.setMaxBounds(campusBounds.pad(0.0025));
-    map.fitBounds(campusBounds, { padding: [20, 20], minZoom: 17, maxZoom: 18 });
-  }
-}
-
-function collectBoundaryRings(geojson) {
-  const rings = [];
-  geojson.features.forEach((feature) => {
-    const geometry = feature.geometry;
-    if (!geometry) return;
-    if (geometry.type === "Polygon") {
-      geometry.coordinates.forEach((ring, index) => {
-        if (index === 0) {
-          rings.push(ring.map(([lng, lat]) => [lat, lng]));
-        }
-      });
-    } else if (geometry.type === "MultiPolygon") {
-      geometry.coordinates.forEach((polygon) => {
-        if (polygon[0]) {
-          rings.push(polygon[0].map(([lng, lat]) => [lat, lng]));
-        }
-      });
-    }
-  });
-  return rings;
-}
-
-function createMaskLayer() {
-  if (!boundaryRings.length) return;
-  if (maskLayer) {
-    maskLayer.remove();
-  }
-  const outerRing = [
-    [90, -180],
-    [90, 180],
-    [-90, 180],
-    [-90, -180]
-  ];
-  maskLayer = L.polygon([outerRing, ...boundaryRings], {
-    stroke: false,
-    fillColor: "#f5faf3",
-    fillOpacity: 1,
-    interactive: false,
-    fillRule: "evenodd"
-  }).addTo(map);
 }
 
 function showBoundaryPopup(lat, lng, message) {
@@ -285,74 +192,138 @@ function wireToggles() {
 }
 
 async function loadGeoJsonLayers() {
-  const responses = await Promise.all(
-    DATASETS.map((dataset) => fetch(dataset.url).then((res) => {
-      if (!res.ok) throw new Error(`Failed to load ${dataset.url}`);
-      return res.json();
-    }))
-  );
+  const response = await fetch(CET_DATA_URL);
+  if (!response.ok) throw new Error(`Failed to load ${CET_DATA_URL}`);
+  const geojson = await response.json();
 
-  responses.forEach((geojson, index) => {
-    const dataset = DATASETS[index];
-    if (dataset.id === "paths") {
-      const layer = L.geoJSON(geojson, {
-        style: {
-          color: dataset.color,
-          weight: 4,
-          opacity: 0.95
-        }
-      });
-      layer.addTo(map);
-      layerStore.set(dataset.id, layer);
-      graphNodes = buildGraph(geojson.features);
-      return;
+  // Separate features by geometry type
+  const pathFeatures = [];
+  const pointFeatures = [];
+  const polygonFeatures = [];
+
+  geojson.features.forEach((feature) => {
+    const geomType = feature.geometry?.type;
+    if (geomType === "LineString" || geomType === "MultiLineString") {
+      pathFeatures.push(feature);
+    } else if (geomType === "Point") {
+      pointFeatures.push(feature);
+    } else if (geomType === "Polygon" || geomType === "MultiPolygon") {
+      polygonFeatures.push(feature);
     }
+  });
 
-    const layer = L.geoJSON(geojson, {
-      pointToLayer: (feature, latlng) =>
-        L.circleMarker(latlng, {
-          radius: dataset.pointRadius,
-          color: dataset.color,
+  // Load paths (LineStrings)
+  if (pathFeatures.length > 0) {
+    const pathLayer = L.geoJSON(pathFeatures, {
+      style: {
+        color: COLORS.path,
+        weight: 4,
+        opacity: 0.95
+      }
+    });
+    pathLayer.addTo(map);
+    layerStore.set("paths", pathLayer);
+    graphNodes = buildGraph(pathFeatures);
+  }
+
+  // Load polygons (buildings)
+  if (polygonFeatures.length > 0) {
+    const polygonLayer = L.geoJSON(polygonFeatures, {
+      style: (feature) => {
+        const props = feature.properties || {};
+        const type = getFeatureType(props);
+        return {
+          color: COLORS[type] || COLORS.building,
+          weight: 2,
+          opacity: 0.9,
+          fillColor: COLORS[type] || COLORS.building,
+          fillOpacity: 0.3
+        };
+      },
+      onEachFeature: (feature, layerRef) => {
+        const props = feature.properties || {};
+        const name = getFeatureName(props);
+        if (name) {
+          layerRef.bindPopup(`<strong>${name}</strong>`);
+        }
+      }
+    });
+    polygonLayer.addTo(map);
+    layerStore.set("buildings", polygonLayer);
+  }
+
+  // Load points (landmarks, hostels, etc.)
+  if (pointFeatures.length > 0) {
+    const pointLayer = L.geoJSON(pointFeatures, {
+      pointToLayer: (feature, latlng) => {
+        const props = feature.properties || {};
+        const type = getFeatureType(props);
+        return L.circleMarker(latlng, {
+          radius: 9,
+          color: COLORS[type] || COLORS.landmark,
           fillColor: "#ffffff",
           fillOpacity: 0.95,
           weight: 2
-        }),
-      style: (feature) => {
-        const geomType = feature.geometry?.type;
-        if (geomType === "Polygon" || geomType === "MultiPolygon") {
-          return {
-            color: dataset.color,
-            weight: 2,
-            opacity: 0.9,
-            fillColor: dataset.color,
-            fillOpacity: 0
-          };
-        }
-        return undefined;
+        });
       },
       onEachFeature: (feature, layerRef) => {
-        const props = feature.properties;
-        layerRef.bindPopup(`<strong>${props.name}</strong><br>${props.description || ""}`);
-        registerPlace(dataset.id, feature);
+        const props = feature.properties || {};
+        const name = getFeatureName(props);
+        if (name) {
+          layerRef.bindPopup(`<strong>${name}</strong>`);
+          registerPlace(feature);
+        }
       }
     });
-
-    if (dataset.id !== "paths") {
-      layer.addTo(map);
-    }
-    layerStore.set(dataset.id, layer);
-  });
+    pointLayer.addTo(map);
+    layerStore.set("landmarks", pointLayer);
+  }
 }
 
-function registerPlace(datasetId, feature) {
-  const props = feature.properties;
+function getFeatureName(props) {
+  // Try various property names that might contain the feature name
+  const keys = Object.keys(props);
+  for (const key of keys) {
+    if (key.toLowerCase().includes('name') || key === 'Name') {
+      return props[key];
+    }
+  }
+  // If no name property, use the first non-empty property value
+  for (const key of keys) {
+    if (props[key] && typeof props[key] === 'string' && props[key].trim()) {
+      return props[key];
+    }
+  }
+  return null;
+}
+
+function getFeatureType(props) {
+  const name = getFeatureName(props);
+  if (!name) return 'default';
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('hostel') || nameLower.includes('lh') || nameLower.includes('mh')) {
+    return 'hostel';
+  }
+  if (nameLower.includes('lab') || nameLower.includes('dept') || nameLower.includes('block')) {
+    return 'building';
+  }
+  return 'landmark';
+}
+
+function registerPlace(feature) {
+  const props = feature.properties || {};
+  const name = getFeatureName(props);
+  if (!name) return;
+  
   const [lng, lat] = feature.geometry.coordinates;
+  const type = getFeatureType(props);
   const entry = {
-    id: props.id,
-    name: props.name,
-    type: datasetId,
-    typeLabel: props.category ? props.category : datasetId.slice(0, -1),
-    aliases: [props.name, ...(props.aliases || [])].map((alias) => alias.toLowerCase()),
+    id: props.id || featureIndex.length,
+    name: name,
+    type: type,
+    typeLabel: type,
+    aliases: [name].map((alias) => alias.toLowerCase()),
     description: props.description || "",
     lat,
     lng
