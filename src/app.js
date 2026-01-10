@@ -245,6 +245,12 @@ async function loadGeoJsonLayers() {
         const name = getFeatureName(props);
         if (name) {
           const type = getFeatureType(props);
+          // Add permanent tooltip with building name
+          layerRef.bindTooltip(name, {
+            permanent: true,
+            direction: 'center',
+            className: 'building-label'
+          });
           layerRef.bindPopup(`<strong>${name}</strong><br><em>${type}</em>`);
           layerRef.on('click', () => {
             layerRef.openPopup();
@@ -286,16 +292,15 @@ async function loadGeoJsonLayers() {
 }
 
 function getFeatureName(props) {
-  // Get the first property key's value (the actual property name from cet.geojson)
+  // In cet.geojson, the name is the property KEY, not the value
+  // e.g., {"Ground": ""} or {"ECE Dept": ""}
   const keys = Object.keys(props);
   if (keys.length === 0) return null;
   
-  // Return the value of the first property key
-  const firstKey = keys[0];
-  const value = props[firstKey];
-  
-  if (value && typeof value === 'string' && value.trim()) {
-    return value.trim();
+  // Return the first property key as the name
+  const name = keys[0];
+  if (name && name.trim()) {
+    return name.trim();
   }
   
   return null;
