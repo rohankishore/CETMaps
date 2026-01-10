@@ -1,27 +1,248 @@
-# CETMaps
+# 🗺️ CET Campus Maps
 
-Progressive Web App for navigating the College of Engineering Trivandrum campus fully offline.
+<div align="center">
 
-## Highlights
-- Leaflet.js + OpenStreetMap base map tailored for outdoor/mobile use, locked to the CET boundary perimeter
-- Local GeoJSON layers for buildings, hostels, landmarks, and pedestrian paths
-- Alias-based search ("EEE block", "LH", "Ground") with instant map focus
-- On-device routing entirely within campus paths — no external APIs
-- GPS location display plus installable PWA experience that works offline (app shell, data, tiles cached)
+**Navigate College of Engineering Trivandrum with style** ✨
 
-## Getting Started
-1. Install dependencies (none beyond a static server) and run any static host, e.g. `npx serve .` from the repo root.
-2. Open http://localhost:3000 (or the reported URL) on mobile/desktop.
-3. Allow location access for live positioning, pick start/destination, and tap **Route**.
+[![Live Demo](https://img.shields.io/badge/🌐-Live%20Demo-blue?style=for-the-badge)](https://cetmaps.vercel.app)
+[![PWA](https://img.shields.io/badge/📱-PWA%20Ready-success?style=for-the-badge)](#)
+[![Offline](https://img.shields.io/badge/⚡-Works%20Offline-orange?style=for-the-badge)](#)
 
-## Offline & PWA
-- A service worker (`sw.js`) precaches the UI, data, icons, and Leaflet assets, plus runtime-caches GeoJSON + OSM tiles.
-- `manifest.webmanifest` enables installation with maskable icons.
-- Use Chrome/Edge's "Install app" prompt or add to home screen on Android/iOS Safari.
+*An interactive, offline-first Progressive Web App for exploring CET campus*
 
-## Data
-- GeoJSON lives in `/data`. Update or extend feature collections to cover more campus assets.
-- Route graph auto-builds from `paths.geojson`, so keep path segments continuous for accurate routing.
+</div>
 
-## Contributing
-Feel free to open issues for new data layers, improved styling, or additional offline tiles. 
+---
+
+## ✨ Features
+
+### 🎯 **Core Navigation**
+- 📍 **GPS Location Tracking** - Real-time positioning on campus
+- 🛣️ **Smart Routing** - Walking directions between any two points
+- 🔍 **Intelligent Search** - Find buildings, hostels, labs with aliases (e.g., "LH", "Ground")
+- 🏷️ **Building Labels** - Permanent labels on all campus structures
+
+### 🎨 **Visual Experience**
+- 🌓 **Dark Mode** - Beautiful dark theme with matching map tiles
+- 🔄 **360° Rotation** - Rotate the map with touch gestures or controls
+- 🎭 **Label-Free Basemap** - Clean CartoDB tiles (light & dark variants)
+- 🎨 **Color-Coded Layers** - Buildings, hostels, landmarks with distinct colors
+
+### 📱 **Modern PWA**
+- ⚡ **Fully Offline** - Works without internet after first load
+- 📲 **Installable** - Add to home screen like a native app
+- 🚀 **Fast Loading** - Service worker caches everything
+- 📊 **Real-time Updates** - Live GPS positioning
+
+### 🎮 **User Interface**
+- 🔘 **Quick Filters** - Food courts, Labs, Hostels, Ground, Exam halls
+- 🎛️ **Layer Toggles** - Show/hide buildings, landmarks, hostels, paths
+- 📏 **Distance Display** - Walking time and distance estimates
+- 🎯 **Focus Mode** - Click any building or marker to focus
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- A modern web browser (Chrome, Firefox, Safari, Edge)
+- Node.js (optional, for local development)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/rohankishore/CETMaps.git
+cd CETMaps
+
+# Serve locally (choose one)
+npx serve .
+# OR
+python -m http.server 8000
+# OR
+php -S localhost:8000
+```
+
+Visit `http://localhost:8000` in your browser! 🎉
+
+---
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Map Engine**: Leaflet.js + leaflet-rotate
+- **Data Format**: GeoJSON
+- **Basemap**: CartoDB (light & dark, no labels)
+- **Offline**: Service Worker + Cache API
+- **Routing**: Custom A* pathfinding algorithm
+- **UI**: Vanilla JavaScript + CSS Variables
+
+### File Structure
+```
+CETMaps/
+├── index.html          # Main application
+├── src/
+│   ├── app.js         # Core logic & map initialization
+│   └── styles.css     # Theming & responsive design
+├── cet.geojson        # Campus data (buildings, paths, POIs)
+├── sw.js              # Service worker for offline support
+├── manifest.webmanifest  # PWA configuration
+└── public/
+    └── icons/         # App icons (192x192, 512x512)
+```
+
+---
+
+## 🎨 Key Features Explained
+
+### 🗺️ Single Data Source
+All campus data (buildings, paths, landmarks) comes from **one GeoJSON file** (`cet.geojson`):
+- **Polygons** → Buildings with labels
+- **LineStrings** → Walkable paths
+- **Points** → Landmarks and hostels
+
+### 🌓 Smart Dark Mode
+- Automatically switches basemap tiles
+- Updates all UI colors using CSS variables
+- Saves preference in localStorage
+- Adjusts building label colors for contrast
+
+### 🧭 Rotation Controls
+- **Touch**: Two-finger rotation gesture
+- **Keyboard**: Shift+Alt+Drag
+- **Button**: Rotation control in bottom-right corner
+- Powered by leaflet-rotate plugin
+
+### 🎯 Intelligent Search
+Search accepts:
+- Full names: "Main Building"
+- Aliases: "LH", "Ground", "CGPU"
+- Partial matches: "dept", "lab"
+- Categories: "canteen", "hostel"
+
+---
+
+## 📊 Data Format
+
+The `cet.geojson` file uses a simple property structure:
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "Building Name": ""
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [...]
+  }
+}
+```
+
+**Property key** = Feature name (displayed on map)
+**Property value** = Can be empty or contain description
+
+---
+
+## 🛠️ Development
+
+### Adding New Features
+1. **Buildings**: Add polygon features to `cet.geojson`
+2. **Paths**: Add LineString features for routing
+3. **Markers**: Add Point features for landmarks
+
+### Customizing Colors
+Edit the `COLORS` object in `src/app.js`:
+```javascript
+const COLORS = {
+  building: "#0b8a5d",
+  landmark: "#f18f01",
+  hostel: "#1768ac",
+  path: "#05603c",
+  default: "#666666"
+};
+```
+
+### Theme Customization
+Modify CSS variables in `src/styles.css`:
+```css
+:root {
+  --accent: #0d74ff;
+  --panel: rgba(255, 255, 255, 0.96);
+  /* ... more variables */
+}
+```
+
+---
+
+## 📱 PWA Installation
+
+### Android
+1. Open the site in Chrome
+2. Tap "Add to Home Screen"
+3. Launch from home screen like any app
+
+### iOS
+1. Open in Safari
+2. Tap Share → "Add to Home Screen"
+3. Access from home screen
+
+### Desktop
+1. Open in Chrome/Edge
+2. Click install icon in address bar
+3. Use as standalone app
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Indoor navigation for multi-floor buildings
+- [ ] AR navigation mode
+- [ ] User-contributed photos and reviews
+- [ ] Events and notices overlay
+- [ ] Multi-language support
+- [ ] Accessibility improvements
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Areas for Contribution
+- 🗺️ More accurate campus data
+- 🎨 UI/UX improvements
+- 🐛 Bug fixes
+- 📚 Documentation
+- 🌐 Translations
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Leaflet.js** - Amazing open-source mapping library
+- **CartoDB** - Beautiful basemap tiles
+- **leaflet-rotate** - Rotation capabilities
+- **CET Community** - For campus data and feedback
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the CET community**
+
+[Report Bug](https://github.com/rohankishore/CETMaps/issues) · [Request Feature](https://github.com/rohankishore/CETMaps/issues)
+
+</div> 
