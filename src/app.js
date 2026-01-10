@@ -1,5 +1,5 @@
 const MAP_CENTER = [8.54589, 76.90585];
-const DEFAULT_ZOOM = 24;
+const DEFAULT_ZOOM = 18;
 const WALKING_SPEED_MPS = 1.4;
 const BOUNDARY_URL = "./data/cet_loc_v1.geojson";
 
@@ -73,7 +73,7 @@ const map = L.map("map", {
   zoom: DEFAULT_ZOOM,
   zoomControl: false,
   preferCanvas: true,
-  minZoom: 16,
+  minZoom: 17,
   maxZoom: 20,
   maxBoundsViscosity: 1.0
 });
@@ -150,7 +150,7 @@ async function loadCampusBoundary() {
   campusBounds = boundaryLayer.getBounds();
   if (campusBounds.isValid()) {
     map.setMaxBounds(campusBounds.pad(0.0025));
-    map.fitBounds(campusBounds, { padding: [20, 20], maxZoom: DEFAULT_ZOOM });
+    map.fitBounds(campusBounds, { padding: [20, 20], minZoom: 17, maxZoom: 18 });
   }
 }
 
