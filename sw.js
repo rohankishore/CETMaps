@@ -1,22 +1,17 @@
-const APP_CACHE = "cetmaps-shell-v1";
-const DATA_CACHE = "cetmaps-data-v1";
-const TILE_CACHE = "cetmaps-tiles-v1";
+const APP_CACHE = "cetmaps-shell-v2";
+const DATA_CACHE = "cetmaps-data-v2";
+const TILE_CACHE = "cetmaps-tiles-v2";
 const APP_ASSETS = [
   "/",
   "/index.html",
   "/src/styles.css",
   "/src/app.js",
   "/manifest.webmanifest",
-  "/data/buildings.geojson",
-  "/data/landmarks.geojson",
-  "/data/hostels.geojson",
-  "/data/paths.geojson",
-  "/data/cet_loc_v1.geojson",
-  "/public/icons/icon-192.svg",
-  "/public/icons/icon-512.svg",
-  "/public/logo.png",
+  "/cet.geojson",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
-  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+  "https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.css",
+  "https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"
 ];
 
 self.addEventListener("install", (event) => {
@@ -117,6 +112,14 @@ async function networkFirst(cacheName, request) {
     if (cached) {
       return cached;
     }
-    throw error;
+    // Return a basic HTML fallback for navigation requests
+    if (request.mode === 'navigate') {
+      return cache.match('/index.html');
+    }
+    // For other requests, just return a network error response
+    return new Response('Network error', {
+      status: 408,
+      headers: { 'Content-Type': 'text/plain' }
+    });
   }
 }

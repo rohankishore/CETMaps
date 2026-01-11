@@ -490,25 +490,18 @@ routeButton.addEventListener("click", () => {
     routeSummary.textContent = "Destination unavailable.";
     return;
   }
-  if (!isInsideCampus(endPoint.lat, endPoint.lng)) {
-    routeSummary.textContent = "Destination lies outside CET campus.";
-    showBoundaryPopup(endPoint.lat, endPoint.lng, "Destination lies outside the CET boundary.");
-    return;
-  }
-  if (startValue === "my-location" && !isInsideCampus(startPoint.lat, startPoint.lng)) {
-    routeSummary.textContent = "Your location is outside CET campus.";
-    showBoundaryPopup(startPoint.lat, startPoint.lng, "Starting point lies outside the CET boundary.");
-    return;
-  }
+  
   if (!graphNodes) {
     routeSummary.textContent = "Paths are still caching. Try again.";
     return;
   }
+  
   const route = computeRoute(graphNodes, getLatLng(startPoint), getLatLng(endPoint));
   if (!route) {
     routeSummary.textContent = "No walking path found between the points.";
     return;
   }
+  
   drawRoute(route.path);
   const minutes = Math.max(1, Math.round(route.distance / (WALKING_SPEED_MPS * 60)));
   routeSummary.textContent = `Route ready: ${(route.distance / 1000).toFixed(2)} km · ~${minutes} min walk.`;
