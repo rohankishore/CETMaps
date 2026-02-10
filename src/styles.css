@@ -920,6 +920,27 @@ body {
   font-size: 0.95rem;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.modal-github-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.modal-github-btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .modal-github-btn:hover {
@@ -935,6 +956,8 @@ body {
   width: 22px;
   height: 22px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .modal-continue-btn {

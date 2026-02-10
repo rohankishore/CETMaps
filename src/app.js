@@ -736,11 +736,9 @@ function initWelcomeModal() {
   const closeBtn = modal.querySelector(".modal-close");
   const continueBtn = modal.querySelector(".modal-continue-btn");
   
-  // Check if user has already seen the modal
   const hasSeenModal = localStorage.getItem("cetMapsWelcomeSeen");
   
   if (!hasSeenModal) {
-    // Show modal after a brief delay
     setTimeout(() => {
       modal.classList.add("active");
       document.body.style.overflow = "hidden";
