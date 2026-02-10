@@ -494,9 +494,9 @@ body {
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .top-bar {
-    top: 0.75rem;
-    left: 0.75rem;
-    right: 0.75rem;
+    top: max(0.75rem, var(--safe-area-top));
+    left: max(0.75rem, var(--safe-area-left));
+    right: max(0.75rem, var(--safe-area-right));
     gap: 0.5rem;
   }
 
@@ -510,7 +510,7 @@ body {
 
   .chip-scroll {
     top: 4.5rem;
-    padding: 0 0.75rem;
+    padding: 0 max(0.75rem, var(--safe-area-left)) 0 max(0.75rem, var(--safe-area-right));
     gap: 0.5rem;
   }
 
@@ -521,7 +521,7 @@ body {
   }
 
   .info-sheet {
-    padding: 1rem 1.25rem 1.5rem;
+    padding: 1rem 1.25rem calc(1.5rem + var(--safe-area-bottom));
     max-height: 55vh;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
