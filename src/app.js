@@ -729,3 +729,41 @@ function registerServiceWorker() {
     });
   }
 }
+
+function initWelcomeModal() {
+  const modal = document.getElementById("welcomeModal");
+  const closeBtn = modal.querySelector(".modal-close");
+  const continueBtn = modal.querySelector(".modal-continue-btn");
+  
+  // Check if user has already seen the modal
+  const hasSeenModal = localStorage.getItem("cetMapsWelcomeSeen");
+  
+  if (!hasSeenModal) {
+    // Show modal after a brief delay
+    setTimeout(() => {
+      modal.classList.add("active");
+    }, 500);
+  }
+  
+  function closeModal() {
+    modal.classList.remove("active");
+    localStorage.setItem("cetMapsWelcomeSeen", "true");
+  }
+  
+  closeBtn.addEventListener("click", closeModal);
+  continueBtn.addEventListener("click", closeModal);
+  
+  // Close on overlay click
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("active")) {
+      closeModal();
+    }
+  });
+}
