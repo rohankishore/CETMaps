@@ -313,7 +313,7 @@ async function loadGeoJsonLayers() {
     layerStore.set("buildings", polygonLayer);
   }
 
-  // Load points (landmarks, hostels, etc.)
+  // Load points (landmarks, hostels, etc.). Maybe implement lazy loading later but ath pinne
   if (pointFeatures.length > 0) {
     const pointLayer = L.geoJSON(pointFeatures, {
       pointToLayer: (feature, latlng) => {
@@ -342,12 +342,10 @@ async function loadGeoJsonLayers() {
 }
 
 function getFeatureName(props) {
-  // In cet.geojson, the name is the property KEY, not the value
-  // e.g., {"Ground": ""} or {"ECE Dept": ""}
   const keys = Object.keys(props);
   if (keys.length === 0) return null;
   
-  // Return the first property key as the name
+  // Return the first property key as the name. Work aaya kollaayrnn
   const name = keys[0];
   if (name && name.trim()) {
     return name.trim();

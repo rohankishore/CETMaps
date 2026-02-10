@@ -14,6 +14,12 @@
   --accent: #0d74ff;
   --accent-strong: #0048cf;
   --border-soft: 1px solid rgba(11, 28, 44, 0.08);
+  
+  /* Safe area insets for notched devices */
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+  --safe-area-left: env(safe-area-inset-left);
+  --safe-area-right: env(safe-area-inset-right);
 }
 
 [data-theme="dark"] {
@@ -114,9 +120,9 @@ body {
 
 .top-bar {
   position: absolute;
-  top: 1.25rem;
-  left: 1.25rem;
-  right: 1.25rem;
+  top: max(1.25rem, var(--safe-area-top));
+  left: max(1.25rem, var(--safe-area-left));
+  right: max(1.25rem, var(--safe-area-right));
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -148,6 +154,11 @@ body {
 .icon-button:active {
   transform: scale(0.95);
   box-shadow: 0 6px 18px rgba(11, 17, 32, 0.3);
+}
+
+.icon-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .icon-line {
@@ -225,8 +236,10 @@ body {
   outline-offset: 2px;
 }
 
-.chip:hover {
+.chip:hover,
+.chip:active {
   color: var(--ink);
+  background: var(--panel-strong);
 }
 
 .coords-badge {
@@ -252,7 +265,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 1.25rem 1.5rem 1.75rem;
+  padding: 1.25rem 1.5rem calc(1.75rem + var(--safe-area-bottom));
   background: var(--panel-strong);
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
@@ -329,6 +342,11 @@ body {
 
 .primary-btn:active {
   transform: scale(0.98);
+}
+
+.primary-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .route-summary {
@@ -449,6 +467,149 @@ body {
   cursor: pointer;
 }
 
+.mini-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(13, 116, 255, 0.15);
+  color: var(--accent-strong);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 60px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.mini-btn:active {
+  transform: scale(0.96);
+  background: rgba(13, 116, 255, 0.25);
+}
+
+.mini-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .top-bar {
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .search-wrapper {
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+  }
+
+  .search-wrapper input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .chip-scroll {
+    top: 4.5rem;
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+  }
+
+  .info-sheet {
+    padding: 1rem 1.25rem 1.5rem;
+    max-height: 55vh;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+  }
+
+  .route-form {
+    grid-template-columns: 1fr;
+  }
+
+  .field select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem 1rem;
+  }
+
+  .primary-btn {
+    padding: 1rem 1.2rem;
+    font-size: 1.05rem;
+  }
+
+  .toggle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-card {
+    padding: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .result-text h3 {
+    font-size: 0.95rem;
+  }
+
+  .mini-btn {
+    padding: 0.6rem 1rem;
+  }
+
+  .building-label {
+    font-size: 0.65rem;
+  }
+
+  /* Make scrolling smoother on mobile */
+  .info-sheet,
+  .results-list,
+  .chip-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Improve tap targets */
+  .icon-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .icon-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .top-bar {
+    gap: 0.4rem;
+  }
+
+  .icon-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .toggle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-sheet {
+    padding: 0.85rem 1rem 1.25rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 899px) {
+  .chip-scroll {
+    top: 5rem;
+  }
+
+  .info-sheet {
+    max-height: 50vh;
+  }
+}
+
 @media (min-width: 900px) {
   .info-sheet {
     width: 420px;
@@ -465,5 +626,42 @@ body {
 
   .chip-scroll {
     right: calc(420px + 2.5rem);
+  }
+}
+
+/* Mobile landscape optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+  .info-sheet {
+    max-height: 70vh;
+  }
+
+  .top-bar {
+    top: 0.5rem;
+  }
+
+  .chip-scroll {
+    top: 3.75rem;
+  }
+
+  .results-list {
+    max-height: 120px;
+  }
+}
+
+/* High DPI / Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .building-label {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
