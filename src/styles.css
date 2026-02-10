@@ -404,6 +404,11 @@ body {
   transform: translateX(16px);
 }
 
+.toggle input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .results-header h2 {
   margin: 0;
   font-size: 1.2rem;
@@ -422,6 +427,21 @@ body {
   max-height: 180px;
   overflow-y: auto;
   padding-right: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.results-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.results-list::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+.results-list::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .result-card {
