@@ -736,19 +736,15 @@ function initWelcomeModal() {
   const closeBtn = modal.querySelector(".modal-close");
   const continueBtn = modal.querySelector(".modal-continue-btn");
   
-  const hasSeenModal = localStorage.getItem("cetMapsWelcomeSeen");
-  
-  if (!hasSeenModal) {
-    setTimeout(() => {
-      modal.classList.add("active");
-      document.body.style.overflow = "hidden";
-    }, 500);
-  }
+  // Show modal every time on page load
+  setTimeout(() => {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }, 500);
   
   function closeModal() {
     modal.classList.remove("active");
     document.body.style.overflow = "";
-    localStorage.setItem("cetMapsWelcomeSeen", "true");
   }
   
   closeBtn.addEventListener("click", closeModal);
