@@ -246,7 +246,7 @@ async function loadGeoJsonLayers() {
   if (!response.ok) throw new Error(`Failed to load ${CET_DATA_URL}`);
   const geojson = await response.json();
 
-  // Separate features by geometry type
+  // Separate features by geometry type. thanks my boi claude for generating this fcukass boring shit
   const pathFeatures = [];
   const pointFeatures = [];
   const polygonFeatures = [];
