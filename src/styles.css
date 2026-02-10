@@ -968,13 +968,14 @@ body {
 /* Mobile modal optimizations */
 @media (max-width: 640px) {
   .modal-overlay {
-    padding: 0.5rem;
+    padding: 0;
     align-items: flex-end;
   }
 
   .modal-content {
     border-radius: 24px 24px 0 0;
-    max-height: 85vh;
+    max-height: 90vh;
+    padding-bottom: var(--safe-area-bottom);
   }
 
   .modal-header {
@@ -995,7 +996,7 @@ body {
   }
 
   .modal-footer {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem calc(1.25rem + var(--safe-area-bottom));
     gap: 0.65rem;
   }
 

@@ -743,11 +743,13 @@ function initWelcomeModal() {
     // Show modal after a brief delay
     setTimeout(() => {
       modal.classList.add("active");
+      document.body.style.overflow = "hidden";
     }, 500);
   }
   
   function closeModal() {
     modal.classList.remove("active");
+    document.body.style.overflow = "";
     localStorage.setItem("cetMapsWelcomeSeen", "true");
   }
   
