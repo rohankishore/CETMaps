@@ -128,6 +128,7 @@ body {
   gap: 0.8rem;
   z-index: 3;
   pointer-events: none;
+  flex-wrap: nowrap;
 }
 
 .icon-button {
@@ -143,6 +144,7 @@ body {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   pointer-events: auto;
+  flex-shrink: 0;
 }
 
 .icon-button svg {
@@ -179,6 +181,8 @@ body {
   background: var(--panel-strong);
   box-shadow: var(--chip-shadow);
   pointer-events: auto;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .search-wrapper input {
@@ -188,6 +192,8 @@ body {
   font-size: 1rem;
   color: var(--ink);
   outline: none;
+  min-width: 0;
+  width: 100%;
 }
 
 .search-wrapper input:focus {
@@ -557,6 +563,12 @@ body {
 
 /* Mobile optimizations */
 @media (max-width: 640px) {
+  /* Hide non-essential buttons on mobile to prevent overflow */
+  .top-bar > button:first-child,
+  .top-bar > button[aria-label="Voice search"] {
+    display: none;
+  }
+
   .top-bar {
     top: max(0.75rem, var(--safe-area-top));
     left: max(0.75rem, var(--safe-area-left));
@@ -566,6 +578,8 @@ body {
 
   .search-wrapper {
     padding: 0.4rem 0.4rem 0.4rem 1rem;
+    min-width: 0;
+    flex-shrink: 1;
   }
 
   .search-wrapper input {
@@ -645,14 +659,45 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  .icon-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .icon-button svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .search-wrapper button {
+    width: 42px;
+    height: 42px;
+  }
+}
+
 @media (max-width: 380px) {
   .top-bar {
     gap: 0.4rem;
   }
 
   .icon-button {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .icon-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .search-wrapper {
+    padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+  }
+
+  .search-wrapper button {
+    width: 40px;
+    height: 40px;
   }
 
   .toggle-grid {
