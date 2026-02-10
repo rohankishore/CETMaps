@@ -2,6 +2,9 @@
 
 <div align="center">
 
+<img width="1273" height="687" alt="image" src="https://github.com/user-attachments/assets/3d989d19-d689-42ee-9197-6165b94b6778" />
+
+
 **Navigate College of Engineering Trivandrum with style** ✨
 
 [![Live Demo](https://img.shields.io/badge/🌐-Live%20Demo-blue?style=for-the-badge)](https://cetmaps.vercel.app)
