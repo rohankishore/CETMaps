@@ -43,6 +43,8 @@ body {
   font-family: var(--font, "Plus Jakarta Sans", "Segoe UI", sans-serif);
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-x pan-y;
 }
 
 .app-shell {
