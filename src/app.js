@@ -84,6 +84,7 @@ initialize();
 
 async function initialize() {
   registerServiceWorker();
+  initWelcomeModal();
   wireSearch();
   wireQuickFilters();
   wireToggles();
