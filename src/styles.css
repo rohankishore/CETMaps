@@ -434,6 +434,13 @@ body {
   background: rgba(255, 255, 255, 0.9);
   border: var(--border-soft);
   box-shadow: 0 12px 28px rgba(13, 30, 45, 0.14);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.result-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 8px 20px rgba(13, 30, 45, 0.2);
 }
 
 .result-text h3 {
@@ -596,7 +603,7 @@ body {
   }
 
   .info-sheet {
-    padding: 0.85rem 1rem 1.25rem;
+    padding: 0.85rem 1rem calc(1.25rem + var(--safe-area-bottom));
   }
 }
 
