@@ -1,3 +1,4 @@
+import { showBuildingDetails, buildingDetailsData } from './buildingDetails.js';
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
 const WALKING_SPEED_MPS = 1.4;
@@ -302,12 +303,21 @@ async function loadGeoJsonLayers() {
             direction: 'center',
             className: 'building-label'
           });
-          layerRef.bindPopup(`<strong>${name}</strong><br><em>${type}</em>`);
           layerRef.on('click', () => {
-            layerRef.openPopup();
+            // Hide map details, show building details
+            document.getElementById('buildingDetails').style.display = 'block';
+            showBuildingDetails(name);
           });
           registerPlace(feature);
         }
+      // Hide building details when clicking outside
+      document.addEventListener('click', function(e) {
+        const details = document.getElementById('buildingDetails');
+        if (!details) return;
+        if (details.style.display === 'block' && !details.contains(e.target)) {
+          details.style.display = 'none';
+        }
+      });
       }
     });
     polygonLayer.addTo(map);
