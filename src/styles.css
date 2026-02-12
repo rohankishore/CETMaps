@@ -415,6 +415,29 @@ body {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) transparent;
+  transition: max-height 0.35s cubic-bezier(.4,2,.6,1), padding 0.25s;
+}
+
+.info-sheet.collapsed {
+  max-height: 38px;
+  min-height: 0;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+  overflow: hidden;
+  gap: 0;
+}
+
+.sheet-handle {
+  align-self: center;
+  width: 52px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(6, 15, 32, 0.12);
+  margin-bottom: 0.2rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.sheet-handle:hover {
+  background: rgba(13,116,255,0.18);
 }
 
 .info-sheet::-webkit-scrollbar {

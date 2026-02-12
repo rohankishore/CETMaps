@@ -1,3 +1,27 @@
+// --- Collapsible info-sheet logic ---
+const infoSheet = document.getElementById('infoSheet');
+const sheetHandle = document.getElementById('sheetHandle');
+const INFO_SHEET_KEY = 'infoSheetCollapsed';
+
+function setInfoSheetCollapsed(collapsed) {
+  if (collapsed) {
+    infoSheet.classList.add('collapsed');
+    localStorage.setItem(INFO_SHEET_KEY, '1');
+  } else {
+    infoSheet.classList.remove('collapsed');
+    localStorage.setItem(INFO_SHEET_KEY, '0');
+  }
+}
+
+// Restore state on load
+if (localStorage.getItem(INFO_SHEET_KEY) === '1') {
+  infoSheet.classList.add('collapsed');
+}
+
+sheetHandle.addEventListener('click', () => {
+  const collapsed = infoSheet.classList.toggle('collapsed');
+  localStorage.setItem(INFO_SHEET_KEY, collapsed ? '1' : '0');
+});
 import { showBuildingDetails } from './buildingDetails.js';
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
