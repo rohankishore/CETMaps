@@ -3,8 +3,8 @@
 
 const buildingDetailsData = {
   // Example structure, should be replaced with real data or fetched from server
-  'MainBlock': {
-    name: 'Main Block',
+  'Main Building': {
+    name: 'Main Building',
     floors: [
       { floor: 1, rooms: '101-120', bathrooms: 2, halls: 1 },
       { floor: 2, rooms: '201-220', bathrooms: 2, halls: 1 },
