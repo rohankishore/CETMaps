@@ -1,5 +1,6 @@
+> Although the accuracy sometimes reaches around 15m, its still not (as of Feb 13 2026) fully reliable for path tracking. I recommend using this to get an overall idea of where the buildings are standing, and also their hindsight internal structure by clicking on an building.
 
-# MapCET
+# CETMaps
 
 Navigate College of Engineering Trivandrum with a modern web app.
 
