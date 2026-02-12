@@ -8,7 +8,7 @@
     ]
   },
   {
-    "name": "Library Block",
+    "name": "Library",
     "floors": [
       { "floor": 1, "rooms": "L01-L10", "bathrooms": 1, "halls": 2 },
       { "floor": 2, "rooms": "L11-L20", "bathrooms": 1, "halls": 1 }
