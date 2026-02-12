@@ -1,36 +1,3 @@
-// Collapsible info-sheet logic
-document.addEventListener('DOMContentLoaded', () => {
-  const infoSheet = document.querySelector('.info-sheet');
-  const handle = document.getElementById('infoSheetHandle');
-  const toggleBtn = document.getElementById('infoSheetToggle');
-  const toggleIcon = document.getElementById('infoSheetToggleIcon');
-  let isCollapsed = true;
-
-  function setSheetState(collapsed) {
-    isCollapsed = collapsed;
-    infoSheet.classList.toggle('collapsed', collapsed);
-    toggleIcon.textContent = collapsed ? '▲' : '▼';
-  }
-
-  setSheetState(true);
-
-  handle.addEventListener('click', () => setSheetState(!isCollapsed));
-  toggleBtn.addEventListener('click', () => setSheetState(!isCollapsed));
-
-  // Optional: drag to expand/collapse
-  let startY = null, startCollapsed = null;
-  handle.addEventListener('touchstart', (e) => {
-    startY = e.touches[0].clientY;
-    startCollapsed = isCollapsed;
-  });
-  handle.addEventListener('touchmove', (e) => {
-    if (startY === null) return;
-    const deltaY = e.touches[0].clientY - startY;
-    if (deltaY < -40 && startCollapsed) setSheetState(false);
-    if (deltaY > 40 && !startCollapsed) setSheetState(true);
-  });
-  handle.addEventListener('touchend', () => { startY = null; });
-});
 import { showBuildingDetails } from './buildingDetails.js';
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
