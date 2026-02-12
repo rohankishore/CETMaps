@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Main Building",
+    "floors": [
+      { "floor": 1, "rooms": "101-120", "bathrooms": 2, "halls": 1 },
+      { "floor": 2, "rooms": "201-220", "bathrooms": 2, "halls": 1 },
+      { "floor": 3, "rooms": "301-320", "bathrooms": 2, "halls": 1 }
+    ]
+  },
+  {
+    "name": "Library Block",
+    "floors": [
+      { "floor": 1, "rooms": "L01-L10", "bathrooms": 1, "halls": 2 },
+      { "floor": 2, "rooms": "L11-L20", "bathrooms": 1, "halls": 1 }
+    ]
+  },
+  {
+    "name": "Hostel Wing",
+    "floors": [
+      { "floor": 1, "rooms": "H01-H20", "bathrooms": 3, "halls": 0 },
+      { "floor": 2, "rooms": "H21-H40", "bathrooms": 2, "halls": 0 }
+    ]
+  }
+]

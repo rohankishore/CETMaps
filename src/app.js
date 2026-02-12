@@ -1,4 +1,4 @@
-import { showBuildingDetails, buildingDetailsData } from './buildingDetails.js';
+import { showBuildingDetails } from './buildingDetails.js';
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;
 const WALKING_SPEED_MPS = 1.4;
