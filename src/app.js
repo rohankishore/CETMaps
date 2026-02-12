@@ -303,13 +303,14 @@ async function loadGeoJsonLayers() {
             direction: 'center',
             className: 'building-label'
           });
-          layerRef.on('click', () => {
-            // Hide map details, show building details
+          layerRef.on('click', (e) => {
+            e.originalEvent.stopPropagation();
             document.getElementById('buildingDetails').style.display = 'block';
             showBuildingDetails(name);
           });
           registerPlace(feature);
         }
+      }
       // Hide building details when clicking outside
       document.addEventListener('click', function(e) {
         const details = document.getElementById('buildingDetails');
