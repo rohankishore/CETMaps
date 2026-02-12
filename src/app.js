@@ -320,8 +320,11 @@ async function loadGeoJsonLayers() {
         modal.style.display = 'none';
       }
     });
-    document.getElementById('closeBuildingModal').addEventListener('click', function() {
-      document.getElementById('buildingDetails').style.display = 'none';
+    // Delegate close button event since it may be re-rendered
+    document.getElementById('buildingDetails').addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'closeBuildingModal') {
+        document.getElementById('buildingDetails').style.display = 'none';
+      }
     });
     polygonLayer.addTo(map);
     layerStore.set("buildings", polygonLayer);

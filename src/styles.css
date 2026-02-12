@@ -82,7 +82,7 @@
   font-size: 1.7rem;
   color: var(--modal-close-color, var(--accent, #0d74ff));
   cursor: pointer;
-  z-index: 10001;
+  z-index: 10;
   width: 2.5rem;
   height: 2.5rem;
   display: flex;

@@ -18,12 +18,16 @@ async function showBuildingDetails(buildingId) {
   const details = buildingDetailsData[buildingId];
   const modal = document.getElementById('buildingDetails');
   const content = document.getElementById('buildingDetailsContent');
+  // Ensure close button stays at top right of content
+  const closeBtn = document.getElementById('closeBuildingModal');
+  if (closeBtn) closeBtn.style.position = 'absolute';
   if (!details) {
-    content.innerHTML = '<p>No details found.</p>';
+    content.innerHTML = `<button id="closeBuildingModal" class="modal-close" aria-label="Close details">&times;</button><p>No details found.</p>`;
     modal.style.display = 'block';
     return;
   }
-  let html = `<h2>${details.name}</h2>`;
+  let html = `<button id="closeBuildingModal" class="modal-close" aria-label="Close details">&times;</button>`;
+  html += `<h2>${details.name}</h2>`;
   html += '<ul>';
   details.floors.forEach(floor => {
     html += `<li>Floor ${floor.floor}: Rooms ${floor.rooms}, Bathrooms: ${floor.bathrooms}, Halls: ${floor.halls}</li>`;
