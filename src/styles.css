@@ -1,4 +1,20 @@
-﻿/* Building Details Modal */
+﻿/* Building Details Modal (restored for visibility) */
+.building-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10010;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--modal-bg, rgba(30, 35, 45, 0.25));
+  backdrop-filter: blur(10px) saturate(160%) contrast(120%);
+  animation: modalFadeIn 0.35s cubic-bezier(.4,2,.6,1) 1;
+}
+/* Building Details Modal */
 .info-sheet {
   position: absolute;
   left: 0;
