@@ -1,3 +1,29 @@
+// --- Floating location button logic ---
+const locateMeBtn = document.getElementById('locateMeBtn');
+if (locateMeBtn) {
+  locateMeBtn.addEventListener('click', () => {
+    if (navigator.geolocation) {
+      locateMeBtn.disabled = true;
+      locateMeBtn.style.opacity = '0.7';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          map.setView([latitude, longitude], map.getZoom(), { animate: true });
+          locateMeBtn.disabled = false;
+          locateMeBtn.style.opacity = '';
+        },
+        (err) => {
+          alert('Unable to get your location. Please enable GPS.');
+          locateMeBtn.disabled = false;
+          locateMeBtn.style.opacity = '';
+        },
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  });
+}
 // --- Mobile-native draggable info-sheet logic ---
 const infoSheet = document.getElementById('infoSheet');
 const sheetHandle = document.getElementById('sheetHandle');

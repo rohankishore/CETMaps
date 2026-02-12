@@ -1,4 +1,34 @@
-﻿.modal-close {
+﻿/* Floating location button */
+.floating-locate-btn {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 10030;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #0d74ff;
+  box-shadow: 0 4px 18px rgba(13,116,255,0.13), 0 1.5px 8px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.18s, border-color 0.18s;
+}
+.floating-locate-btn:active {
+  box-shadow: 0 2px 8px rgba(13,116,255,0.10);
+  border-color: #0048cf;
+}
+@media (max-width: 600px) {
+  .floating-locate-btn {
+    right: 1rem;
+    bottom: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+}
+.modal-close {
   position: absolute;
   top: 1.1rem;
   right: 1.1rem;
