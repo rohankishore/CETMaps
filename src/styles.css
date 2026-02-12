@@ -1,5 +1,6 @@
 ﻿/* Building Details Modal */
 
+
 .building-modal {
   position: fixed;
   top: 0;
@@ -11,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(30, 35, 45, 0.25);
+  background: var(--modal-bg, rgba(30, 35, 45, 0.25));
   backdrop-filter: blur(10px) saturate(160%) contrast(120%);
   animation: modalFadeIn 0.35s cubic-bezier(.4,2,.6,1) 1;
 }
@@ -24,22 +25,22 @@
 #buildingDetailsContent {
   width: 92vw;
   max-width: 420px;
-  background: rgba(255,255,255,0.85);
+  background: var(--modal-content-bg, rgba(255,255,255,0.85));
   border-radius: 1.25rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   padding: 2.2rem 2rem 1.5rem 2rem;
   margin: 0 auto;
   position: relative;
   backdrop-filter: blur(8px) saturate(180%);
-  border: 1.5px solid rgba(30,35,45,0.08);
-  transition: box-shadow 0.2s;
+  border: 1.5px solid var(--modal-content-border, rgba(30,35,45,0.08));
+  transition: box-shadow 0.2s, background 0.2s;
 }
 
 #buildingDetailsContent h2 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1.2rem;
-  color: var(--accent, #0d74ff);
+  color: var(--modal-title, var(--accent, #0d74ff));
   letter-spacing: -1px;
   text-shadow: 0 2px 12px rgba(13,116,255,0.08);
 }
@@ -51,14 +52,14 @@
 }
 
 #buildingDetailsContent li {
-  background: rgba(13,116,255,0.07);
+  background: var(--modal-li-bg, rgba(13,116,255,0.07));
   border-radius: 0.7rem;
   margin-bottom: 0.7rem;
   padding: 0.85rem 1.1rem;
   font-size: 1.08rem;
-  color: #222;
+  color: var(--modal-li-color, #222);
   box-shadow: 0 2px 8px rgba(13,116,255,0.04);
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 #buildingDetailsContent li:last-child {
@@ -66,7 +67,7 @@
 }
 
 #buildingDetailsContent p {
-  color: #444;
+  color: var(--modal-p-color, #444);
   font-size: 1.08rem;
   margin-bottom: 1.2rem;
 }
@@ -75,11 +76,11 @@
   position: absolute;
   top: 1.1rem;
   right: 1.1rem;
-  background: rgba(13,116,255,0.12);
+  background: var(--modal-close-bg, rgba(13,116,255,0.12));
   border: none;
   border-radius: 50%;
   font-size: 1.7rem;
-  color: var(--accent, #0d74ff);
+  color: var(--modal-close-color, var(--accent, #0d74ff));
   cursor: pointer;
   z-index: 10001;
   width: 2.5rem;
@@ -91,8 +92,33 @@
   transition: background 0.18s, color 0.18s;
 }
 .modal-close:hover {
-  background: var(--accent, #0d74ff);
-  color: #fff;
+  background: var(--modal-close-hover-bg, var(--accent, #0d74ff));
+  color: var(--modal-close-hover-color, #fff);
+}
+
+/* Dark theme overrides for modal */
+[data-theme="dark"] .building-modal {
+  --modal-bg: rgba(20, 24, 34, 0.55);
+}
+[data-theme="dark"] #buildingDetailsContent {
+  --modal-content-bg: rgba(30,35,45,0.92);
+  --modal-content-border: rgba(255,255,255,0.08);
+}
+[data-theme="dark"] #buildingDetailsContent h2 {
+  --modal-title: #4a9eff;
+}
+[data-theme="dark"] #buildingDetailsContent li {
+  --modal-li-bg: rgba(74,158,255,0.10);
+  --modal-li-color: #e8eaed;
+}
+[data-theme="dark"] #buildingDetailsContent p {
+  --modal-p-color: #bfc7d5;
+}
+[data-theme="dark"] .modal-close {
+  --modal-close-bg: rgba(74,158,255,0.13);
+  --modal-close-color: #4a9eff;
+  --modal-close-hover-bg: #4a9eff;
+  --modal-close-hover-color: #fff;
 }
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap");
 
