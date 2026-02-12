@@ -305,7 +305,6 @@ async function loadGeoJsonLayers() {
           });
           layerRef.on('click', (e) => {
             e.originalEvent.stopPropagation();
-            document.getElementById('buildingDetails').style.display = 'block';
             showBuildingDetails(name);
           });
           registerPlace(feature);
@@ -313,12 +312,16 @@ async function loadGeoJsonLayers() {
       }
     });
     // Hide building details when clicking outside
+    // Modal close logic
     document.addEventListener('click', function(e) {
-      const details = document.getElementById('buildingDetails');
-      if (!details) return;
-      if (details.style.display === 'block' && !details.contains(e.target)) {
-        details.style.display = 'none';
+      const modal = document.getElementById('buildingDetails');
+      if (!modal) return;
+      if (modal.style.display === 'block' && !modal.contains(e.target)) {
+        modal.style.display = 'none';
       }
+    });
+    document.getElementById('closeBuildingModal').addEventListener('click', function() {
+      document.getElementById('buildingDetails').style.display = 'none';
     });
     polygonLayer.addTo(map);
     layerStore.set("buildings", polygonLayer);

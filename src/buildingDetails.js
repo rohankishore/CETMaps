@@ -16,9 +16,11 @@ async function loadBuildingDetails() {
 async function showBuildingDetails(buildingId) {
   await loadBuildingDetails();
   const details = buildingDetailsData[buildingId];
-  const detailsContainer = document.getElementById('buildingDetails');
+  const modal = document.getElementById('buildingDetails');
+  const content = document.getElementById('buildingDetailsContent');
   if (!details) {
-    detailsContainer.innerHTML = '<p>No details found.</p>';
+    content.innerHTML = '<p>No details found.</p>';
+    modal.style.display = 'block';
     return;
   }
   let html = `<h2>${details.name}</h2>`;
@@ -27,7 +29,8 @@ async function showBuildingDetails(buildingId) {
     html += `<li>Floor ${floor.floor}: Rooms ${floor.rooms}, Bathrooms: ${floor.bathrooms}, Halls: ${floor.halls}</li>`;
   });
   html += '</ul>';
-  detailsContainer.innerHTML = html;
+  content.innerHTML = html;
+  modal.style.display = 'block';
 }
 
 export { showBuildingDetails, loadBuildingDetails };
