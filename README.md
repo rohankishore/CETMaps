@@ -1,6 +1,5 @@
-npx serve .
 
-# CET Campus Maps
+# MapCET
 
 Navigate College of Engineering Trivandrum with a modern web app.
 
