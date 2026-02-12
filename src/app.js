@@ -1,27 +1,99 @@
-// --- Collapsible info-sheet logic ---
+// --- Mobile-native draggable info-sheet logic ---
 const infoSheet = document.getElementById('infoSheet');
 const sheetHandle = document.getElementById('sheetHandle');
+const sheetChevron = document.getElementById('sheetChevron');
 const INFO_SHEET_KEY = 'infoSheetCollapsed';
 
-function setInfoSheetCollapsed(collapsed) {
+let isDragging = false;
+let startY = 0;
+let startHeight = 0;
+let lastDeltaY = 0;
+
+function setSheetState(collapsed) {
   if (collapsed) {
     infoSheet.classList.add('collapsed');
+    infoSheet.classList.remove('expanded');
     localStorage.setItem(INFO_SHEET_KEY, '1');
   } else {
     infoSheet.classList.remove('collapsed');
+    infoSheet.classList.add('expanded');
     localStorage.setItem(INFO_SHEET_KEY, '0');
   }
 }
 
 // Restore state on load
 if (localStorage.getItem(INFO_SHEET_KEY) === '1') {
-  infoSheet.classList.add('collapsed');
+  setSheetState(true);
+} else {
+  setSheetState(false);
 }
 
-sheetHandle.addEventListener('click', () => {
-  const collapsed = infoSheet.classList.toggle('collapsed');
-  localStorage.setItem(INFO_SHEET_KEY, collapsed ? '1' : '0');
+function toggleSheet() {
+  setSheetState(!infoSheet.classList.contains('collapsed'));
+}
+
+sheetHandle.addEventListener('click', (e) => {
+  // Only toggle if not dragging
+  if (!isDragging) toggleSheet();
 });
+
+sheetHandle.addEventListener('touchstart', (e) => {
+  isDragging = true;
+  startY = e.touches[0].clientY;
+  startHeight = infoSheet.offsetHeight;
+  infoSheet.style.transition = 'none';
+});
+
+sheetHandle.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  startY = e.clientY;
+  startHeight = infoSheet.offsetHeight;
+  infoSheet.style.transition = 'none';
+  document.body.style.userSelect = 'none';
+});
+
+function dragMove(clientY) {
+  if (!isDragging) return;
+  lastDeltaY = clientY - startY;
+  let newHeight = startHeight - lastDeltaY;
+  const minH = 38;
+  const maxH = Math.max(window.innerHeight * 0.8, 360);
+  newHeight = Math.max(minH, Math.min(maxH, newHeight));
+  infoSheet.style.setProperty('--sheet-height', newHeight + 'px');
+}
+
+function dragEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  infoSheet.style.transition = '';
+  document.body.style.userSelect = '';
+  // Snap to collapsed or expanded
+  const threshold = 120;
+  if (lastDeltaY > threshold) {
+    setSheetState(true);
+  } else if (lastDeltaY < -threshold) {
+    setSheetState(false);
+  } else {
+    // Snap to nearest
+    if (infoSheet.offsetHeight < window.innerHeight / 2) {
+      setSheetState(true);
+    } else {
+      setSheetState(false);
+    }
+  }
+  infoSheet.style.removeProperty('--sheet-height');
+}
+
+window.addEventListener('touchmove', (e) => {
+  if (isDragging && e.touches.length === 1) {
+    dragMove(e.touches[0].clientY);
+  }
+}, { passive: false });
+window.addEventListener('touchend', dragEnd);
+window.addEventListener('mousemove', (e) => {
+  if (isDragging) dragMove(e.clientY);
+});
+window.addEventListener('mouseup', dragEnd);
 import { showBuildingDetails } from './buildingDetails.js';
 const MAP_CENTER = [8.54589, 76.90585];
 const DEFAULT_ZOOM = 18;

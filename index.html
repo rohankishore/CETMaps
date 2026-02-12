@@ -68,52 +68,58 @@
       </main>
 
       <section class="info-sheet" id="infoSheet" aria-live="polite">
-        <div class="sheet-handle" id="sheetHandle" aria-hidden="true" title="Expand/collapse panel"></div>
-        <div class="status-row">
-          <span class="status-dot"></span>
-          <p id="locationStatus">Trying to lock GPS...</p>
+        <div class="sheet-handle" id="sheetHandle" aria-hidden="true" title="Expand/collapse panel">
+          <svg id="sheetChevron" width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+            <path d="M4 6L16 14L28 6" stroke="#888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-
-        <div class="route-form" aria-label="Route planner">
-          <label class="field">
-            <span>From</span>
-            <select id="startSelect"></select>
-          </label>
-          <label class="field">
-            <span>To</span>
-            <select id="endSelect"></select>
-          </label>
-          <button id="routeButton" type="button" class="primary-btn">Start walking</button>
-        </div>
-
-        <p id="routeSummary" class="route-summary">Pick two points inside CET to preview the walking route.</p>
-
-        <div class="toggle-grid" aria-label="Layer visibility toggles">
-          <label class="toggle">
-            <input id="buildingsToggle" type="checkbox" checked>
-            <span>Buildings</span>
-          </label>
-          <label class="toggle">
-            <input id="landmarksToggle" type="checkbox" checked>
-            <span>Landmarks</span>
-          </label>
-          <label class="toggle">
-            <input id="hostelsToggle" type="checkbox" checked>
-            <span>Hostels</span>
-          </label>
-          <label class="toggle">
-            <input id="pathsToggle" type="checkbox" checked>
-            <span>Paths</span>
-          </label>
-        </div>
-
-        <div class="results-header">
-          <div>
-            <h2>Explore places</h2>
-            <p>Tap a result to fly across campus.</p>
+        <div class="info-sheet-content">
+          <div class="status-row">
+            <span class="status-dot"></span>
+            <p id="locationStatus">Trying to lock GPS...</p>
           </div>
+
+          <div class="route-form" aria-label="Route planner">
+            <label class="field">
+              <span>From</span>
+              <select id="startSelect"></select>
+            </label>
+            <label class="field">
+              <span>To</span>
+              <select id="endSelect"></select>
+            </label>
+            <button id="routeButton" type="button" class="primary-btn">Start walking</button>
+          </div>
+
+          <p id="routeSummary" class="route-summary">Pick two points inside CET to preview the walking route.</p>
+
+          <div class="toggle-grid" aria-label="Layer visibility toggles">
+            <label class="toggle">
+              <input id="buildingsToggle" type="checkbox" checked>
+              <span>Buildings</span>
+            </label>
+            <label class="toggle">
+              <input id="landmarksToggle" type="checkbox" checked>
+              <span>Landmarks</span>
+            </label>
+            <label class="toggle">
+              <input id="hostelsToggle" type="checkbox" checked>
+              <span>Hostels</span>
+            </label>
+            <label class="toggle">
+              <input id="pathsToggle" type="checkbox" checked>
+              <span>Paths</span>
+            </label>
+          </div>
+
+          <div class="results-header">
+            <div>
+              <h2>Explore places</h2>
+              <p>Tap a result to fly across campus.</p>
+            </div>
+          </div>
+          <div id="results" class="results-list"></div>
         </div>
-        <div id="results" class="results-list"></div>
       </section>
     </div>
 
