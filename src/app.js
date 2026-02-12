@@ -311,14 +311,13 @@ async function loadGeoJsonLayers() {
           registerPlace(feature);
         }
       }
-      // Hide building details when clicking outside
-      document.addEventListener('click', function(e) {
-        const details = document.getElementById('buildingDetails');
-        if (!details) return;
-        if (details.style.display === 'block' && !details.contains(e.target)) {
-          details.style.display = 'none';
-        }
-      });
+    });
+    // Hide building details when clicking outside
+    document.addEventListener('click', function(e) {
+      const details = document.getElementById('buildingDetails');
+      if (!details) return;
+      if (details.style.display === 'block' && !details.contains(e.target)) {
+        details.style.display = 'none';
       }
     });
     polygonLayer.addTo(map);
