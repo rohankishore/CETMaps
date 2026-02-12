@@ -1,4 +1,37 @@
-﻿/* Building Details Modal (restored for visibility) */
+﻿.modal-close {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  background: var(--modal-close-bg, rgba(13,116,255,0.12));
+  border: none;
+  border-radius: 50%;
+  font-size: 2.2rem;
+  color: var(--modal-close-color, var(--accent, #0d74ff));
+  cursor: pointer;
+  z-index: 10020;
+  width: 3.2rem;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(13,116,255,0.13), 0 1.5px 8px rgba(0,0,0,0.10);
+  transition: background 0.18s, color 0.18s;
+}
+.modal-close:hover {
+  background: var(--modal-close-hover-bg, var(--accent, #0d74ff));
+  color: var(--modal-close-hover-color, #fff);
+}
+
+@media (max-width: 600px) {
+  .modal-close {
+    font-size: 2.6rem;
+    width: 3.6rem;
+    height: 3.6rem;
+    top: 0.7rem;
+    right: 0.7rem;
+  }
+}
+/* Building Details Modal (restored for visibility) */
 .building-modal {
   position: fixed;
   top: 0;
